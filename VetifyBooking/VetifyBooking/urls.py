@@ -19,16 +19,7 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-]
-from django.contrib import admin
-from django.urls import path, include
 
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('UsersPage.urls')),
-]
-
-urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('UsersPage.urls')),
+    path('', include('UsersPage.urls')),   # pagina principal
+    path('', include('LoginForm.urls')),   # login y register
 ]
