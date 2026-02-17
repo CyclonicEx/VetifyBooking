@@ -6,3 +6,4 @@ def login_view(request):
 
 def register_view(request):
     return render(request, 'LoginForm/register.html')
+#hola
