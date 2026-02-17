@@ -1,0 +1,134 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Home - Vetify Booking{% endblock %}
+
+{% block content %}
+<div class="home-page">
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-content">
+                    <div class="hero-badge">
+                        <span>❤️</span>
+                        <span>Caring for your pets since 2010</span>
+                    </div>
+                    <h1 class="hero-title">Your Pet's Health is Our Priority 🐾</h1>
+                    <p class="hero-text">
+                        Book an appointment today and give your furry friend the care they deserve. 
+                        Our experienced veterinarians are ready to help with a smile!
+                    </p>
+                    <div class="hero-buttons">
+                        <a href="{% url 'booking' %}" class="btn btn-primary btn-lg">Book Appointment</a>
+                        <a href="{% url 'appointments' %}" class="btn btn-secondary btn-lg">View My Appointments</a>
+                    </div>
+                    <div class="hero-info">
+                        <span>🕐</span>
+                        <span>Monday - Saturday: 9:00 AM - 5:00 PM</span>
+                    </div>
+                </div>
+                
+                <div class="hero-image">
+                    <img src="https://images.unsplash.com/photo-1608578261073-5e864a13ee7f?w=600&h=400&fit=crop" alt="Happy puppy">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features">
+        <div class="container">
+            <div class="section-header">
+                <h2>Why Choose Vetify Booking?</h2>
+                <p>We're not just a vet clinic - we're a family that cares about your pets as much as you do!</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon red">❤️</div>
+                    <h3>Compassionate Care</h3>
+                    <p>We treat every pet like family, with gentle hands and warm hearts. Your pet's comfort is our priority!</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon blue">🏆</div>
+                    <h3>Expert Veterinarians</h3>
+                    <p>Over 15 years of experience and countless happy tails! Our team stays updated with the latest in pet care.</p>
+                </div>
+                
+                <div class="feature-card">
+                    <div class="feature-icon green">🛡️</div>
+                    <h3>State-of-the-Art Facility</h3>
+                    <p>Modern equipment and comfortable spaces ensure your pet gets the best possible care in a stress-free environment.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section class="testimonials">
+        <div class="container">
+            <div class="section-header">
+                <h2>Happy Pet Parents 😊</h2>
+                <p>See what our community has to say!</p>
+            </div>
+            
+            <div class="testimonials-grid">
+                <div class="testimonial-card">
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "The staff is amazing! They made my nervous rescue dog feel so comfortable. Best vet experience ever! 🐕"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👨</div>
+                        <div>
+                            <p class="author-name">John M.</p>
+                            <p class="author-role">Dog parent</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "Quick appointments, friendly service, and my cat actually didn't hate it! That's saying something! 😹"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👩</div>
+                        <div>
+                            <p class="author-name">Sarah K.</p>
+                            <p class="author-role">Cat mom</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="rating">⭐⭐⭐⭐⭐</div>
+                    <p class="testimonial-text">
+                        "They saved my rabbit's life and were so caring throughout. Forever grateful! 🐰💕"
+                    </p>
+                    <div class="testimonial-author">
+                        <div class="author-avatar">👨</div>
+                        <div>
+                            <p class="author-name">Mike R.</p>
+                            <p class="author-role">Bunny dad</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="container">
+            <div class="cta-content">
+                <div class="cta-icon">🐾</div>
+                <h2>Ready to Give Your Pet the Best Care?</h2>
+                <p>Join hundreds of happy pet parents who trust us with their furry family members!</p>
+                <a href="{% url 'booking' %}" class="btn btn-white btn-lg">Book Your First Appointment</a>
+            </div>
+        </div>
+    </section>
+</div>
+{% endblock %}

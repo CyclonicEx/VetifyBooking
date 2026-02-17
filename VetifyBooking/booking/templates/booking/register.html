@@ -1,0 +1,84 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}Register - Vetify Booking{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <div class="auth-container">
+        <div class="auth-form-container">
+            <div class="auth-icon">🐾</div>
+            <h2>Join Vetify</h2>
+            <p class="auth-subtitle">Create an account to start booking appointments</p>
+            
+            <form method="post" class="auth-form">
+                {% csrf_token %}
+                
+                <div class="form-group">
+                    <label for="id_username">Username</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">👤</span>
+                        {{ form.username }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_email">Email</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📧</span>
+                        {{ form.email }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_phone">Phone Number</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">📱</span>
+                        {{ form.phone }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password1">Password</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        {{ form.password1 }}
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="id_password2">Confirm Password</label>
+                    <div class="input-with-icon">
+                        <span class="input-icon">🔒</span>
+                        {{ form.password2 }}
+                    </div>
+                </div>
+                
+                {% if form.errors %}
+                <div class="form-errors">
+                    {% for field, errors in form.errors.items %}
+                        {% for error in errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                <button type="submit" class="btn btn-primary btn-block">Create Account</button>
+                
+                <p class="auth-footer">
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="link">Login</a>
+                </p>
+            </form>
+        </div>
+        
+        <div class="auth-image">
+            <img src="https://images.unsplash.com/photo-1570455679702-0424bae83b1b?w=600&h=600&fit=crop" alt="Playful cat">
+            <div class="auth-image-overlay">
+                <h2>Join Our Family! 🎉</h2>
+                <p>Thousands of happy pets and their owners trust us</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

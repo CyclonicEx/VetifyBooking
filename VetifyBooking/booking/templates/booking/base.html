@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Vetify Booking{% endblock %}</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    {% if user.is_authenticated %}
+    <header class="header">
+        <div class="container">
+            <div class="header-content">
+                <a href="{% url 'home' %}" class="logo">
+                    <div class="logo-icon">🐾</div>
+                    <div>
+                        <h1>Vetify Booking</h1>
+                        <p class="tagline">Where Pets Come First</p>
+                    </div>
+                </a>
+                
+                <nav class="nav">
+                    <a href="{% url 'home' %}" class="nav-link">🏠 Home</a>
+                    <a href="{% url 'booking' %}" class="nav-link">📅 Book</a>
+                    <a href="{% url 'appointments' %}" class="nav-link">📋 My Appointments</a>
+                    <a href="{% url 'logout' %}" class="nav-link logout">🚪 Logout</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+    {% endif %}
+
+    {% if messages %}
+    <div class="messages-container">
+        {% for message in messages %}
+        <div class="message message-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    {% if user.is_authenticated %}
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-grid">
+                <div>
+                    <div class="footer-logo">
+                        <span class="logo-icon">🐾</span>
+                        <span>Vetify Booking</span>
+                    </div>
+                    <p class="footer-text">Providing quality veterinary care with love and compassion.</p>
+                </div>
+                
+                <div>
+                    <h4>Contact</h4>
+                    <p class="footer-text">📞 (555) 123-4567</p>
+                    <p class="footer-text">📧 info@vetify.vet</p>
+                    <p class="footer-text">📍 123 Pet Lane, Cityville, ST 12345</p>
+                </div>
+                
+                <div>
+                    <h4>Hours</h4>
+                    <p class="footer-text">Monday - Friday: 9:00 AM - 5:00 PM</p>
+                    <p class="footer-text">Saturday: 9:00 AM - 3:00 PM</p>
+                    <p class="footer-text">Sunday: Closed</p>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>© 2026 Vetify Booking. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    {% endif %}
+</body>
+</html>

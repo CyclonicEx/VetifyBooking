@@ -1,0 +1,75 @@
+{% extends 'booking/base.html' %}
+
+{% block title %}My Appointments - Vetify Booking{% endblock %}
+
+{% block content %}
+<div class="appointments-page">
+    <div class="container-small">
+        <div class="page-header-flex">
+            <div>
+                <h2>My Appointments</h2>
+                <p>Manage your upcoming vet visits</p>
+            </div>
+            <a href="{% url 'booking' %}" class="btn btn-primary">
+                ➕ New Appointment
+            </a>
+        </div>
+        
+        {% if appointments %}
+        <div class="card">
+            <div class="card-header">
+                <h3>📅 Upcoming Appointments</h3>
+                <p class="card-subtitle">You have {{ appointments|length }} appointment{{ appointments|length|pluralize }} scheduled</p>
+            </div>
+            <div class="card-body">
+                {% for appointment in appointments %}
+                <div class="appointment-item">
+                    <div class="appointment-avatar">
+                        {% if appointment.pet_type == 'dog' %}🐕
+                        {% elif appointment.pet_type == 'cat' %}🐈
+                        {% else %}🐾
+                        {% endif %}
+                    </div>
+                    
+                    <div class="appointment-content">
+                        <div class="appointment-header">
+                            <div>
+                                <h4>{{ appointment.pet_name }}</h4>
+                                <p class="appointment-owner">{{ appointment.owner_name }}</p>
+                            </div>
+                            <span class="badge badge-{{ appointment.service }}">
+                                {{ appointment.get_service_display }}
+                            </span>
+                        </div>
+                        
+                        <div class="appointment-details">
+                            <span>📅 {{ appointment.date|date:"D, M d, Y" }}</span>
+                            <span>🕐 {{ appointment.time|time:"g:i A" }}</span>
+                        </div>
+                        
+                        {% if appointment.notes %}
+                        <p class="appointment-notes">"{{ appointment.notes }}"</p>
+                        {% endif %}
+                    </div>
+                    
+                    <form method="post" action="{% url 'delete_appointment' appointment.pk %}" class="delete-form">
+                        {% csrf_token %}
+                        <button type="submit" class="btn-delete" onclick="return confirm('Are you sure you want to delete this appointment?')">
+                            🗑️
+                        </button>
+                    </form>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        {% else %}
+        <div class="empty-state">
+            <div class="empty-icon">📅</div>
+            <h3>No appointments yet</h3>
+            <p>Ready to schedule your pet's next check-up?</p>
+            <a href="{% url 'booking' %}" class="btn btn-primary">Book Your First Appointment</a>
+        </div>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
