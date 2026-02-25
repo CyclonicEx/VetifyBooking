@@ -1,9 +1,16 @@
 from django.contrib import admin
-from .models import Appointment
+from .models import Appointment, Pet
+
 
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
-    list_display = ['pet_name', 'owner_name', 'service', 'date', 'time', 'user']
-    list_filter = ['service', 'date', 'pet_type']
-    search_fields = ['pet_name', 'owner_name', 'email']
-    date_hierarchy = 'date'
+    list_display = ('pet', 'user', 'service', 'date', 'time')
+    list_filter = ('service', 'date')
+    search_fields = ('pet__name', 'user__username')
+
+
+@admin.register(Pet)
+class PetAdmin(admin.ModelAdmin):
+    list_display = ('name', 'owner', 'pet_type', 'age', 'vaccination_status')
+    list_filter = ('pet_type', 'vaccination_status')
+    search_fields = ('name', 'owner__username')

@@ -8,6 +8,7 @@
     <title>{% block title %}Vetify Booking{% endblock %}</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    {% block extra_css %}{% endblock %}
 </head>
 <body>
     {% if user.is_authenticated %}
@@ -21,12 +22,16 @@
                         <p class="tagline">Where Pets Come First</p>
                     </div>
                 </a>
-                
+
                 <nav class="nav">
                     <a href="{% url 'home' %}" class="nav-link">🏠 Home</a>
                     <a href="{% url 'booking' %}" class="nav-link">📅 Book</a>
                     <a href="{% url 'appointments' %}" class="nav-link">📋 My Appointments</a>
                     <a href="{% url 'logout' %}" class="nav-link logout">🚪 Logout</a>
+                    <a href="{% url 'home' %}">Inicio</a>
+                    <a href="{% url 'booking' %}">Reservar</a>
+                    <a href="{% url 'appointments' %}">Mis Citas</a>
+                    <a href="{% url 'profile' %}" class="btn-profile">👤 Mi Perfil</a> <!-- NUEVO -->
                 </nav>
             </div>
         </div>
@@ -80,5 +85,6 @@
         </div>
     </footer>
     {% endif %}
+    {% block extra_js %}{% endblock %}
 </body>
 </html>

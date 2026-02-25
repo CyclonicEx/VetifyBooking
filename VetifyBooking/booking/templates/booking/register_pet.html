@@ -1,0 +1,667 @@
+{% extends 'booking/base.html' %}
+{% load static %}
+
+{% block title %}Registrar Mascota - Vetify{% endblock %}
+
+{% block extra_css %}
+<style>
+    /* Register Pet Page Specific Styles */
+    .register-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 2rem;
+    }
+
+    .page-header {
+        margin-bottom: 2rem;
+    }
+
+    .page-header h1 {
+        font-size: 2rem;
+        color: #0284c7;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .page-header p {
+        color: #6b7280;
+    }
+
+    /* Grid Layout */
+    .form-grid {
+        display: grid;
+        grid-template-columns: 2fr 1fr;
+        gap: 2rem;
+    }
+
+    /* Card */
+    .card {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    /* Form */
+    .form-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-header {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #0284c7;
+        margin-bottom: 1rem;
+        padding-bottom: 0.75rem;
+        border-bottom: 2px solid #e5e7eb;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: #374151;
+        font-size: 0.875rem;
+    }
+
+    .form-input {
+        width: 100%;
+        padding: 0.75rem;
+        border: 1px solid #d1d5db;
+        border-radius: 0.5rem;
+        font-size: 1rem;
+        transition: all 0.3s;
+    }
+
+    .form-input:focus {
+        outline: none;
+        border-color: #38bdf8;
+        box-shadow: 0 0 0 3px rgba(56, 189, 248, 0.1);
+    }
+
+    textarea.form-input {
+        min-height: 100px;
+        resize: vertical;
+    }
+
+    .form-grid-2 {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    /* Radio Buttons */
+    .radio-group {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .radio-option {
+        flex: 1;
+        min-width: 120px;
+    }
+
+    .radio-card {
+        border: 2px solid #d1d5db;
+        border-radius: 0.75rem;
+        padding: 1rem;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-align: center;
+    }
+
+    .radio-card:hover {
+        border-color: #38bdf8;
+    }
+
+    .radio-card input[type="radio"] {
+        display: none;
+    }
+
+    .radio-card input[type="radio"]:checked ~ label,
+    .radio-card:has(input[type="radio"]:checked) {
+        border-color: #38bdf8;
+        background: #e0f2fe;
+    }
+
+    .radio-card label {
+        cursor: pointer;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .radio-emoji {
+        font-size: 2rem;
+    }
+
+    /* Checkboxes */
+    .checkbox-group {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .checkbox-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .checkbox-item input[type="checkbox"] {
+        width: 18px;
+        height: 18px;
+        cursor: pointer;
+    }
+
+    .checkbox-item label {
+        cursor: pointer;
+        font-size: 0.875rem;
+    }
+
+    /* File Upload */
+    .file-upload {
+        border: 2px dashed #d1d5db;
+        border-radius: 0.75rem;
+        padding: 2rem;
+        text-align: center;
+        cursor: pointer;
+        transition: all 0.3s;
+    }
+
+    .file-upload:hover {
+        border-color: #38bdf8;
+        background: #e0f2fe;
+    }
+
+    .file-upload-icon {
+        font-size: 3rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .file-upload input[type="file"] {
+        display: none;
+    }
+
+    /* Buttons */
+    .btn {
+        padding: 0.75rem 1.5rem;
+        border: none;
+        border-radius: 0.5rem;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        font-size: 1rem;
+    }
+
+    .btn-primary {
+        background: #38bdf8;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background: #0284c7;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .btn-outline {
+        background: white;
+        color: #0284c7;
+        border: 2px solid #38bdf8;
+    }
+
+    .btn-outline:hover {
+        background: #e0f2fe;
+    }
+
+    .btn-group {
+        display: flex;
+        gap: 1rem;
+        margin-top: 2rem;
+        padding-top: 2rem;
+        border-top: 2px solid #e5e7eb;
+    }
+
+    .btn-group .btn {
+        flex: 1;
+    }
+
+    /* Preview Card */
+    .preview-card {
+        position: sticky;
+        top: 100px;
+    }
+
+    .preview-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #0284c7;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-description {
+        font-size: 0.875rem;
+        color: #6b7280;
+        margin-bottom: 1.5rem;
+    }
+
+    .pet-preview {
+        background: linear-gradient(135deg, #e0f2fe 0%, #ffffff 100%);
+        border: 1px solid #bae6fd;
+        border-radius: 1rem;
+        padding: 1.25rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .preview-header {
+        display: flex;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
+
+    .preview-avatar {
+        width: 80px;
+        height: 80px;
+        background: linear-gradient(135deg, #bfdbfe 0%, #93c5fd 100%);
+        border-radius: 1rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2.5rem;
+        flex-shrink: 0;
+        border: 2px solid white;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .preview-info h3 {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #0284c7;
+        margin-bottom: 0.5rem;
+    }
+
+    .badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        background: #dbeafe;
+        color: #1e40af;
+        margin-bottom: 0.5rem;
+    }
+
+    .preview-details {
+        color: #6b7280;
+        font-size: 0.875rem;
+        margin: 0.25rem 0;
+    }
+
+    /* Tips Card */
+    .tips-card {
+        background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+        border: 1px solid #6ee7b7;
+        border-radius: 1rem;
+        padding: 1.5rem;
+    }
+
+    .tips-title {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #065f46;
+        margin-bottom: 1rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .tips-list {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .tip-item {
+        display: flex;
+        align-items: flex-start;
+        gap: 0.5rem;
+        font-size: 0.875rem;
+        color: #047857;
+    }
+
+    @media (max-width: 1024px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+
+        .preview-card {
+            position: static;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .form-grid-2 {
+            grid-template-columns: 1fr;
+        }
+
+        .radio-group {
+            flex-direction: column;
+        }
+
+        .radio-option {
+            width: 100%;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="register-container">
+    <!-- Header -->
+    <div class="page-header">
+        <h1>Registrar Nueva Mascota 🐾</h1>
+        <p>Añade a tu compañero peludo a nuestro sistema</p>
+    </div>
+
+    <form method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        
+        <div class="form-grid">
+            <!-- Left Column: Form -->
+            <div>
+                <div class="card">
+                    <!-- Section 1: Basic Info -->
+                    <div class="form-section">
+                        <h3 class="section-header">📝 Información Básica</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">🐾 Nombre de la Mascota *</label>
+                            <input type="text" name="pet_name" class="form-input" placeholder="ej: Max, Luna, Coco..." required id="petName">
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Mascota *</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <div class="radio-card">
+                                        <input type="radio" name="pet_type" value="dog" id="dog" checked onchange="updatePreview()">
+                                        <label for="dog">
+                                            <div class="radio-emoji">🐕</div>
+                                            <div>Perro</div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <div class="radio-card">
+                                        <input type="radio" name="pet_type" value="cat" id="cat" onchange="updatePreview()">
+                                        <label for="cat">
+                                            <div class="radio-emoji">🐈</div>
+                                            <div>Gato</div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <div class="radio-card">
+                                        <input type="radio" name="pet_type" value="other" id="other" onchange="updatePreview()">
+                                        <label for="other">
+                                            <div class="radio-emoji">🐰</div>
+                                            <div>Otro</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group" id="otherTypeGroup" style="display: none;">
+                            <label class="form-label">Especificar tipo</label>
+                            <input type="text" name="other_type" class="form-input" placeholder="ej: Conejo, Hámster, Ave...">
+                        </div>
+                    </div>
+
+                    <!-- Section 2: Physical Characteristics -->
+                    <div class="form-section">
+                        <h3 class="section-header">📏 Características Físicas</h3>
+                        
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">🎯 Raza</label>
+                                <input type="text" name="breed" class="form-input" placeholder="Seleccionar raza">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">🎨 Color</label>
+                                <input type="text" name="color" class="form-input" placeholder="ej: Café, Negro, Blanco">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">🎂 Edad *</label>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="number" name="age" class="form-input" placeholder="0" min="0" required id="petAge" onchange="updatePreview()">
+                                    <span>años</span>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">⚖️ Peso *</label>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <input type="number" step="0.1" name="weight" class="form-input" placeholder="0.0" min="0" required id="petWeight" onchange="updatePreview()">
+                                    <span>kg</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 3: Health Info -->
+                    <div class="form-section">
+                        <h3 class="section-header">💉 Información de Salud</h3>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Estado de Vacunación *</label>
+                            <div class="radio-group">
+                                <div class="radio-option">
+                                    <div class="radio-card" style="border-color: #10b981;">
+                                        <input type="radio" name="vaccination" value="updated" id="vacUpdated" checked onchange="updatePreview()">
+                                        <label for="vacUpdated">
+                                            <div>✅ Al día</div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <div class="radio-card" style="border-color: #f59e0b;">
+                                        <input type="radio" name="vaccination" value="pending" id="vacPending" onchange="updatePreview()">
+                                        <label for="vacPending">
+                                            <div>⏰ Pendiente</div>
+                                        </label>
+                                    </div>
+                                </div>
+                                <div class="radio-option">
+                                    <div class="radio-card" style="border-color: #ef4444;">
+                                        <input type="radio" name="vaccination" value="none" id="vacNone" onchange="updatePreview()">
+                                        <label for="vacNone">
+                                            <div>❌ Sin vacunas</div>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">🏥 Alergias o Condiciones Médicas</label>
+                            <textarea name="allergies" class="form-input" placeholder="Describe alergias, condiciones médicas o medicamentos que esté tomando..."></textarea>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label">Comportamiento</label>
+                            <div class="checkbox-group">
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="friendly_people" id="friendlyPeople" checked>
+                                    <label for="friendlyPeople">Amigable con personas</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="friendly_animals" id="friendlyAnimals" checked>
+                                    <label for="friendlyAnimals">Amigable con otros animales</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="nervous" id="nervous">
+                                    <label for="nervous">Nervioso en el veterinario</label>
+                                </div>
+                                <div class="checkbox-item">
+                                    <input type="checkbox" name="special_care" id="specialCare">
+                                    <label for="specialCare">Requiere cuidado especial</label>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 4: Emergency Contact -->
+                    <div class="form-section">
+                        <h3 class="section-header">🚨 Contacto de Emergencia (Opcional)</h3>
+                        
+                        <div class="form-grid-2">
+                            <div class="form-group">
+                                <label class="form-label">👤 Nombre Completo</label>
+                                <input type="text" name="emergency_name" class="form-input" placeholder="Persona de confianza">
+                            </div>
+
+                            <div class="form-group">
+                                <label class="form-label">📱 Teléfono</label>
+                                <input type="tel" name="emergency_phone" class="form-input" placeholder="+52 555 000 0000">
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Section 5: Photo -->
+                    <div class="form-section">
+                        <h3 class="section-header">📷 Foto de la Mascota (Opcional)</h3>
+                        
+                        <div class="file-upload" onclick="document.getElementById('photoInput').click()">
+                            <div class="file-upload-icon">📤</div>
+                            <p style="font-weight: 600; margin-bottom: 0.25rem;">Arrastra una foto aquí</p>
+                            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem;">o haz clic para seleccionar</p>
+                            <button type="button" class="btn btn-outline" style="font-size: 0.875rem;">Seleccionar Archivo</button>
+                            <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem;">PNG, JPG hasta 5MB</p>
+                            <input type="file" name="photo" id="photoInput" accept="image/*">
+                        </div>
+                    </div>
+
+                    <!-- Action Buttons -->
+                    <div class="btn-group">
+                        <a href="{% url 'profile' %}" class="btn btn-outline">Cancelar</a>
+                        <button type="submit" class="btn btn-primary">Registrar Mascota</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Preview -->
+            <div>
+                <div class="preview-card">
+                    <div class="card">
+                        <h3 class="preview-title">Vista Previa</h3>
+                        <p class="preview-description">Así se verá tu mascota en tu perfil</p>
+                        
+                        <div class="pet-preview">
+                            <div class="preview-header">
+                                <div class="preview-avatar" id="previewEmoji">🐕</div>
+                                <div class="preview-info">
+                                    <h3 id="previewName">Nombre de tu mascota</h3>
+                                    <div class="badge" id="previewType">Perro</div>
+                                    <div class="preview-details">🎂 <span id="previewAge">0</span> años</div>
+                                    <div class="preview-details">⚖️ <span id="previewWeight">0</span> kg</div>
+                                    <div class="preview-details" id="previewVac">💉 Vacunas al día</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="tips-card">
+                        <h3 class="tips-title">💡 Consejos</h3>
+                        <div class="tips-list">
+                            <div class="tip-item">
+                                <span>✓</span>
+                                <span>Nombre corto y fácil de recordar</span>
+                            </div>
+                            <div class="tip-item">
+                                <span>✓</span>
+                                <span>Peso y edad actualizados</span>
+                            </div>
+                            <div class="tip-item">
+                                <span>✓</span>
+                                <span>Información de alergias completa</span>
+                            </div>
+                            <div class="tip-item">
+                                <span>✓</span>
+                                <span>Foto clara de tu mascota</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    // Show/hide other type field
+    document.querySelectorAll('input[name="pet_type"]').forEach(radio => {
+        radio.addEventListener('change', function() {
+            document.getElementById('otherTypeGroup').style.display = 
+                this.value === 'other' ? 'block' : 'none';
+        });
+    });
+
+    // Update preview
+    function updatePreview() {
+        // Name
+        const name = document.getElementById('petName').value || 'Nombre de tu mascota';
+        document.getElementById('previewName').textContent = name;
+
+        // Type
+        const type = document.querySelector('input[name="pet_type"]:checked').value;
+        const typeLabels = { dog: 'Perro', cat: 'Gato', other: 'Otro' };
+        const emojis = { dog: '🐕', cat: '🐈', other: '🐰' };
+        document.getElementById('previewType').textContent = typeLabels[type];
+        document.getElementById('previewEmoji').textContent = emojis[type];
+
+        // Age
+        const age = document.getElementById('petAge').value || '0';
+        document.getElementById('previewAge').textContent = age;
+
+        // Weight
+        const weight = document.getElementById('petWeight').value || '0';
+        document.getElementById('previewWeight').textContent = weight;
+
+        // Vaccination
+        const vac = document.querySelector('input[name="vaccination"]:checked').value;
+        const vacLabels = {
+            updated: '💉 Vacunas al día',
+            pending: '⏰ Vacunas pendientes',
+            none: '❌ Sin vacunas'
+        };
+        document.getElementById('previewVac').textContent = vacLabels[vac];
+    }
+
+    // Update preview on input change
+    document.getElementById('petName').addEventListener('input', updatePreview);
+    document.getElementById('petAge').addEventListener('input', updatePreview);
+    document.getElementById('petWeight').addEventListener('input', updatePreview);
+</script>
+{% endblock %}

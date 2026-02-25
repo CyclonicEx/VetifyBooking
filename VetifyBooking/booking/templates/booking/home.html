@@ -1,4 +1,6 @@
 {% extends 'booking/base.html' %}
+{% load static %}
+
 
 {% block title %}Home - Vetify Booking{% endblock %}
 
@@ -29,7 +31,7 @@
                 </div>
                 
                 <div class="hero-image">
-                    <img src="https://images.unsplash.com/photo-1608578261073-5e864a13ee7f?w=600&h=400&fit=crop" alt="Happy puppy">
+                    <img src="{% static 'images/perrohome.png' %}" alt="PerroHome">
                 </div>
             </div>
         </div>

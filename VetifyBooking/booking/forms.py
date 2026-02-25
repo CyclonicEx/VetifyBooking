@@ -19,19 +19,25 @@ class RegisterForm(UserCreationForm):
                 'class': 'form-input'
             })
 
+from django import forms
+from .models import Appointment, Pet
+
+
 class AppointmentForm(forms.ModelForm):
+
     class Meta:
         model = Appointment
-        fields = ['pet_name', 'pet_type', 'owner_name', 'email', 'phone', 
-                  'service', 'date', 'time', 'notes']
+        fields = ['pet', 'service', 'date', 'time', 'notes']
         widgets = {
-            'date': forms.DateInput(attrs={'type': 'date', 'class': 'form-input'}),
-            'time': forms.TimeInput(attrs={'type': 'time', 'class': 'form-input'}),
-            'notes': forms.Textarea(attrs={'rows': 3, 'class': 'form-input'}),
-            'pet_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'e.g., Max'}),
-            'owner_name': forms.TextInput(attrs={'class': 'form-input', 'placeholder': 'Your name'}),
-            'email': forms.EmailInput(attrs={'class': 'form-input', 'placeholder': 'you@example.com'}),
-            'phone': forms.TextInput(attrs={'class': 'form-input', 'placeholder': '(555) 123-4567'}),
-            'pet_type': forms.RadioSelect(attrs={'class': 'radio-input'}),
-            'service': forms.Select(attrs={'class': 'form-input'}),
+            'date': forms.DateInput(attrs={'type': 'date'}),
+            'time': forms.TimeInput(attrs={'type': 'time'}),
+            'notes': forms.Textarea(attrs={'rows': 3}),
         }
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super().__init__(*args, **kwargs)
+
+        # 🔥 SOLO mostrar mascotas del usuario logueado
+        if user:
+            self.fields['pet'].queryset = Pet.objects.filter(owner=user)
