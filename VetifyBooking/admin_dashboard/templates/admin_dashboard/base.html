@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - Vetify{% endblock %}</title>
+    
+    <!-- AGREGAR ESTA LÍNEA -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'admin_dashboard/css/admin.css' %}">
+    
+    <!-- Estilos específicos de cada página -->
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Sidebar -->
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <div class="logo-icon">🐾</div>
+                <div class="logo-text">
+                    <h2>Vetify Admin</h2>
+                    <p>Panel de Control</p>
+                </div>
+            </div>
+        </div>
+
+        <nav class="sidebar-nav">
+            <!-- Main Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Principal</div>
+                <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </a>
+            </div>
+
+            <!-- Management Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Gestión</div>
+                <a href="{% url 'admin_dashboard:appointments' %}" class="nav-link {% if request.resolver_match.url_name == 'appointments' %}active{% endif %}">
+                    <span class="nav-icon">📅</span>
+                    <span>Citas</span>
+                </a>
+                <a href="{% url 'admin_dashboard:users' %}" class="nav-link {% if request.resolver_match.url_name == 'users' %}active{% endif %}">
+                    <span class="nav-icon">👥</span>
+                    <span>Usuarios</span>
+                </a>
+                <a href="{% url 'admin_dashboard:pets' %}" class="nav-link {% if request.resolver_match.url_name == 'pets' %}active{% endif %}">
+                    <span class="nav-icon">🐾</span>
+                    <span>Mascotas</span>
+                </a>
+                <a href="{% url 'admin_dashboard:veterinarians' %}" class="nav-link {% if request.resolver_match.url_name == 'veterinarians' %}active{% endif %}">
+                    <span class="nav-icon">👨‍⚕️</span>
+                    <span>Veterinarios</span>
+                </a>
+                <a href="{% url 'admin_dashboard:services' %}" class="nav-link {% if request.resolver_match.url_name == 'services' %}active{% endif %}">
+                    <span class="nav-icon">💉</span>
+                    <span>Servicios</span>
+                </a>
+                <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link {% if request.resolver_match.url_name == 'schedules' %}active{% endif %}">
+                    <span class="nav-icon">🕐</span>
+                    <span>Horarios</span>
+                </a>
+            </div>
+
+            <!-- Analytics Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Analíticas</div>
+                <a href="{% url 'admin_dashboard:reports' %}" class="nav-link {% if request.resolver_match.url_name == 'reports' %}active{% endif %}">
+                    <span class="nav-icon">📈</span>
+                    <span>Reportes</span>
+                </a>
+            </div>
+
+            <!-- System Section -->
+            <div class="nav-section">
+                <div class="nav-section-title">Sistema</div>
+                <a href="{% url 'home' %}" class="nav-link">
+                    <span class="nav-icon">🏠</span>
+                    <span>Ver Sitio Web</span>
+                </a>
+            </div>
+        </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <!-- Top Bar -->
+        <div class="top-bar">
+            <h1 class="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+            <div class="user-info">
+                <div class="user-avatar">👤</div>
+                <div class="user-details">
+                    <span class="user-name">{{ user.username }}</span>
+                    <span class="user-role">Administrador</span>
+                </div>
+                <a href="{% url 'logout' %}" class="logout-btn">
+                    🚪 Salir
+                </a>
+            </div>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+        <div class="messages-container">
+            {% for message in messages %}
+            <div class="message message-{{ message.tags }}">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+
+        <!-- Content -->
+        <div class="content">
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

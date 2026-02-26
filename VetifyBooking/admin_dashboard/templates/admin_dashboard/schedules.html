@@ -1,0 +1,359 @@
+{% extends 'admin_dashboard/base.html' %}
+
+{% block title %}Gestión de Horarios - Vetify Admin{% endblock %}
+{% block page_title %}Gestión de Horarios{% endblock %}
+
+{% block extra_css %}
+<style>
+    .intro-card {
+        background: linear-gradient(135deg, #38bdf8 0%, #0284c7 100%);
+        color: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        margin-bottom: 2rem;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.3);
+    }
+
+    .intro-card h2 {
+        font-size: 1.5rem;
+        margin-bottom: 0.5rem;
+    }
+
+    .intro-card p {
+        opacity: 0.95;
+    }
+
+    .schedule-container {
+        background: white;
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .schedule-header {
+        margin-bottom: 2rem;
+        padding-bottom: 1rem;
+        border-bottom: 2px solid #e5e7eb;
+    }
+
+    .schedule-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0f172a;
+        margin-bottom: 0.5rem;
+    }
+
+    .schedule-subtitle {
+        color: #6b7280;
+        font-size: 0.875rem;
+    }
+
+    .schedule-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 1.5rem;
+    }
+
+    .day-card {
+        background: linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%);
+        border: 2px solid #bae6fd;
+        border-radius: 1rem;
+        padding: 1.5rem;
+        transition: all 0.3s;
+    }
+
+    .day-card:hover {
+        border-color: #38bdf8;
+        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        transform: translateY(-2px);
+    }
+
+    .day-card.closed {
+        background: linear-gradient(135deg, #f9fafb 0%, #ffffff 100%);
+        border-color: #d1d5db;
+        opacity: 0.7;
+    }
+
+    .day-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e0f2fe;
+    }
+
+    .day-name {
+        font-size: 1.25rem;
+        font-weight: 700;
+        color: #0284c7;
+    }
+
+    .day-status {
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+    }
+
+    .status-open {
+        background: #d1fae5;
+        color: #065f46;
+    }
+
+    .status-closed {
+        background: #fee2e2;
+        color: #991b1b;
+    }
+
+    .time-info {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        margin-bottom: 1rem;
+    }
+
+    .time-icon {
+        width: 48px;
+        height: 48px;
+        background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        flex-shrink: 0;
+    }
+
+    .time-details {
+        flex: 1;
+    }
+
+    .time-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        margin-bottom: 0.25rem;
+    }
+
+    .time-value {
+        font-size: 1.125rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .schedule-notes {
+        background: #fffbeb;
+        border-left: 3px solid #f59e0b;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .notes-title {
+        font-size: 0.875rem;
+        font-weight: 600;
+        color: #92400e;
+        margin-bottom: 0.5rem;
+    }
+
+    .notes-text {
+        font-size: 0.875rem;
+        color: #78350f;
+    }
+
+    .closed-message {
+        text-align: center;
+        padding: 2rem;
+        color: #9ca3af;
+        font-size: 1rem;
+    }
+
+    /* Stats Summary */
+    .stats-summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1rem;
+        margin-bottom: 2rem;
+    }
+
+    .stat-box {
+        background: white;
+        border-radius: 0.75rem;
+        padding: 1.25rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .stat-icon {
+        width: 56px;
+        height: 56px;
+        border-radius: 0.75rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.75rem;
+    }
+
+    .stat-icon-blue { background: #dbeafe; }
+    .stat-icon-green { background: #d1fae5; }
+    .stat-icon-orange { background: #fed7aa; }
+
+    .stat-content {
+        flex: 1;
+    }
+
+    .stat-value {
+        font-size: 1.75rem;
+        font-weight: 700;
+        color: #0f172a;
+    }
+
+    .stat-label {
+        font-size: 0.75rem;
+        color: #6b7280;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-box {
+        background: #f0f9ff;
+        border: 1px solid #bae6fd;
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-top: 2rem;
+    }
+
+    .info-title {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #0369a1;
+        margin-bottom: 0.5rem;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .info-text {
+        font-size: 0.875rem;
+        color: #0c4a6e;
+        line-height: 1.6;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Intro Card -->
+<div class="intro-card">
+    <h2>🕐 Horarios de Atención</h2>
+    <p>Gestiona los horarios de apertura y cierre de la clínica veterinaria</p>
+</div>
+
+<!-- Stats Summary -->
+<div class="stats-summary">
+    <div class="stat-box">
+        <div class="stat-icon stat-icon-blue">📅</div>
+        <div class="stat-content">
+            <div class="stat-value">{{ clinic_schedules|length }}</div>
+            <div class="stat-label">Días configurados</div>
+        </div>
+    </div>
+
+    <div class="stat-box">
+        <div class="stat-icon stat-icon-green">✅</div>
+        <div class="stat-content">
+            <div class="stat-value">
+                {{ open_days }}
+            </div>
+            <div class="stat-label">Días abiertos</div>
+        </div>
+    </div>
+
+    <div class="stat-box">
+        <div class="stat-icon stat-icon-orange">⏰</div>
+        <div class="stat-content">
+            <div class="stat-value">09:00 - 17:00</div>
+            <div class="stat-label">Horario común</div>
+        </div>
+    </div>
+</div>
+
+<!-- Schedule Container -->
+<div class="schedule-container">
+    <div class="schedule-header">
+        <h2 class="schedule-title">📋 Horarios por Día</h2>
+        <p class="schedule-subtitle">Horarios de atención para cada día de la semana</p>
+    </div>
+
+    {% if clinic_schedules %}
+    <div class="schedule-grid">
+        {% for schedule in clinic_schedules %}
+        <div class="day-card {% if not schedule.is_open %}closed{% endif %}">
+            <div class="day-header">
+                <h3 class="day-name">{{ schedule.get_day_of_week_display }}</h3>
+                <span class="day-status {% if schedule.is_open %}status-open{% else %}status-closed{% endif %}">
+                    {% if schedule.is_open %}✓ Abierto{% else %}✗ Cerrado{% endif %}
+                </span>
+            </div>
+
+            {% if schedule.is_open %}
+                <div class="time-info">
+                    <div class="time-icon">🌅</div>
+                    <div class="time-details">
+                        <div class="time-label">Apertura</div>
+                        <div class="time-value">{{ schedule.opening_time|time:"H:i" }}</div>
+                    </div>
+                </div>
+
+                <div class="time-info">
+                    <div class="time-icon">🌆</div>
+                    <div class="time-details">
+                        <div class="time-label">Cierre</div>
+                        <div class="time-value">{{ schedule.closing_time|time:"H:i" }}</div>
+                    </div>
+                </div>
+
+                {% if schedule.notes %}
+                <div class="schedule-notes">
+                    <div class="notes-title">📝 Notas Adicionales</div>
+                    <div class="notes-text">{{ schedule.notes }}</div>
+                </div>
+                {% endif %}
+            {% else %}
+                <div class="closed-message">
+                    🔒 La clínica permanece cerrada este día
+                    {% if schedule.notes %}
+                    <div class="schedule-notes" style="margin-top: 1rem;">
+                        <div class="notes-title">📝 Información</div>
+                        <div class="notes-text">{{ schedule.notes }}</div>
+                    </div>
+                    {% endif %}
+                </div>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div style="text-align: center; padding: 3rem; color: #9ca3af;">
+        <div style="font-size: 3rem; margin-bottom: 1rem;">📅</div>
+        <h3>No hay horarios configurados</h3>
+        <p>Configura los horarios desde el panel de administración de Django</p>
+    </div>
+    {% endif %}
+</div>
+
+<!-- Info Box -->
+<div class="info-box">
+    <div class="info-title">
+        ℹ️ Cómo editar los horarios
+    </div>
+    <div class="info-text">
+        Para modificar los horarios de atención, dirígete al panel de administración de Django:<br>
+        <strong>Admin Panel → Booking → Clinic Schedules</strong><br>
+        Ahí podrás crear, editar o eliminar los horarios de cada día de la semana.
+    </div>
+</div>
+{% endblock %}

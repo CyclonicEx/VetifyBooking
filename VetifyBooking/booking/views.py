@@ -187,3 +187,38 @@ def delete_pet_view(request, pet_id):
     pet.delete()
     messages.success(request, f'{pet_name} ha sido eliminado.')
     return redirect('profile')
+
+from django.shortcuts import render
+from .models import Service, Veterinarian, ClinicSchedule
+
+# ... tus otras vistas existentes ...
+
+def schedules_view(request):
+    """Vista para mostrar horarios, servicios y veterinarios"""
+    # Obtener todos los datos
+    services = Service.objects.filter(is_active=True)
+    veterinarians = Veterinarian.objects.filter(is_active=True)
+    clinic_schedules = ClinicSchedule.objects.all().order_by('day_of_week')
+    
+    # Organizar horarios de clínica
+    schedule_dict = {}
+    day_order = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday']
+    
+    for schedule in clinic_schedules:
+        schedule_dict[schedule.day_of_week] = schedule
+    
+    # Crear lista ordenada de horarios
+    ordered_schedules = []
+    for day in day_order:
+        if day in schedule_dict:
+            ordered_schedules.append(schedule_dict[day])
+    
+    context = {
+        'services': services,
+        'veterinarians': veterinarians,
+        'clinic_schedules': ordered_schedules,
+        'services_count': services.count(),
+        'vets_count': veterinarians.count(),
+    }
+    
+    return render(request, 'booking/schedules.html', context)

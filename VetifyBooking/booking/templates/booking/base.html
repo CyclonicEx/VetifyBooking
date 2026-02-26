@@ -1,13 +1,15 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
-    <link rel="stylesheet" href="{% static 'css/styles.css' %}">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>{% block title %}Vetify Booking{% endblock %}</title>
-    {% load static %}
+    
+    <!-- CSS Principal -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    
+    <!-- CSS Adicional de cada página -->
     {% block extra_css %}{% endblock %}
 </head>
 <body>
@@ -24,20 +26,26 @@
                 </a>
 
                 <nav class="nav">
-                    <a href="{% url 'home' %}" class="nav-link">🏠 Home</a>
-                    <a href="{% url 'booking' %}" class="nav-link">📅 Book</a>
-                    <a href="{% url 'appointments' %}" class="nav-link">📋 My Appointments</a>
-                    <a href="{% url 'logout' %}" class="nav-link logout">🚪 Logout</a>
-                    <a href="{% url 'home' %}">Inicio</a>
-                    <a href="{% url 'booking' %}">Reservar</a>
-                    <a href="{% url 'appointments' %}">Mis Citas</a>
-                    <a href="{% url 'profile' %}" class="btn-profile">👤 Mi Perfil</a> <!-- NUEVO -->
+                    <a href="{% url 'home' %}" class="nav-link">🏠 Inicio</a>
+                    <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link">🕐 Horarios</a>
+                    <a href="{% url 'booking' %}" class="nav-link">📅 Reservar</a>
+                    <a href="{% url 'appointments' %}" class="nav-link">📋 Mis Citas</a>
+                    <a href="{% url 'profile' %}" class="nav-link">👤 Mi Perfil</a>
+                    
+                    {% if user.is_superuser %}
+                    <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link" style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 0.5rem;">
+                        ⚙️ Admin
+                    </a>
+                    {% endif %}
+                    
+                    <a href="{% url 'logout' %}" class="nav-link logout">🚪 Salir</a>
                 </nav>
             </div>
         </div>
     </header>
     {% endif %}
 
+    <!-- Mensajes del sistema -->
     {% if messages %}
     <div class="messages-container">
         {% for message in messages %}
@@ -48,10 +56,12 @@
     </div>
     {% endif %}
 
+    <!-- Contenido principal -->
     <main>
         {% block content %}{% endblock %}
     </main>
 
+    <!-- Footer -->
     {% if user.is_authenticated %}
     <footer class="footer">
         <div class="container">
@@ -85,6 +95,8 @@
         </div>
     </footer>
     {% endif %}
+    
+    <!-- JavaScript adicional de cada página -->
     {% block extra_js %}{% endblock %}
 </body>
 </html>

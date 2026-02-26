@@ -111,3 +111,107 @@ class Appointment(models.Model):
 
     def __str__(self):
         return f"{self.pet.name} - {self.date} at {self.time}"
+    
+class Service(models.Model):
+    """Servicios que ofrece la veterinaria"""
+    name = models.CharField(max_length=100, verbose_name="Nombre del servicio")
+    description = models.TextField(verbose_name="Descripción")
+    duration = models.IntegerField(verbose_name="Duración (minutos)")
+    price = models.DecimalField(max_digits=8, decimal_places=2, verbose_name="Precio")
+    icon = models.CharField(max_length=10, default="💉", verbose_name="Icono emoji")
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    
+    class Meta:
+        verbose_name = "Servicio"
+        verbose_name_plural = "Servicios"
+        ordering = ['name']
+    
+    def __str__(self):
+        return self.name
+
+
+class Veterinarian(models.Model):
+    """Veterinarios disponibles"""
+    SPECIALTIES = [
+        ('general', 'Medicina General'),
+        ('surgery', 'Cirugía'),
+        ('dental', 'Odontología'),
+        ('dermatology', 'Dermatología'),
+        ('cardiology', 'Cardiología'),
+        ('emergency', 'Emergencias'),
+    ]
+    
+    # Información personal
+    name = models.CharField(max_length=200, verbose_name="Nombre completo")
+    specialty = models.CharField(max_length=20, choices=SPECIALTIES, verbose_name="Especialidad")
+    license_number = models.CharField(max_length=50, verbose_name="Número de cédula")
+    email = models.EmailField(verbose_name="Correo electrónico")
+    phone = models.CharField(max_length=20, verbose_name="Teléfono")
+    
+    # Experiencia
+    years_experience = models.IntegerField(verbose_name="Años de experiencia")
+    bio = models.TextField(verbose_name="Biografía", blank=True)
+    
+    # Disponibilidad
+    available_days = models.JSONField(
+        default=list,
+        verbose_name="Días disponibles",
+        help_text="Lista de días disponibles"
+    )
+    start_time = models.TimeField(verbose_name="Hora de inicio", default="09:00")
+    end_time = models.TimeField(verbose_name="Hora de fin", default="17:00")
+    
+    # Foto
+    photo = models.ImageField(upload_to='vets/', blank=True, null=True, verbose_name="Foto")
+    
+    # Estado
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    
+    class Meta:
+        verbose_name = "Veterinario"
+        verbose_name_plural = "Veterinarios"
+        ordering = ['name']
+    
+    def __str__(self):
+        return f"Dr(a). {self.name} - {self.get_specialty_display()}"
+    
+    def get_emoji(self):
+        """Retorna emoji según especialidad"""
+        emojis = {
+            'general': '🩺',
+            'surgery': '🏥',
+            'dental': '🦷',
+            'dermatology': '💊',
+            'cardiology': '❤️',
+            'emergency': '🚑',
+        }
+        return emojis.get(self.specialty, '👨‍⚕️')
+
+
+class ClinicSchedule(models.Model):
+    """Horarios de la clínica"""
+    DAYS_OF_WEEK = [
+        ('monday', 'Lunes'),
+        ('tuesday', 'Martes'),
+        ('wednesday', 'Miércoles'),
+        ('thursday', 'Jueves'),
+        ('friday', 'Viernes'),
+        ('saturday', 'Sábado'),
+        ('sunday', 'Domingo'),
+    ]
+    
+    day_of_week = models.CharField(max_length=10, choices=DAYS_OF_WEEK, unique=True, verbose_name="Día")
+    is_open = models.BooleanField(default=True, verbose_name="Abierto")
+    opening_time = models.TimeField(verbose_name="Hora de apertura", default="09:00")
+    closing_time = models.TimeField(verbose_name="Hora de cierre", default="17:00")
+    notes = models.TextField(blank=True, verbose_name="Notas adicionales")
+    
+    class Meta:
+        verbose_name = "Horario de Clínica"
+        verbose_name_plural = "Horarios de Clínica"
+        ordering = ['day_of_week']
+    
+    def __str__(self):
+        if self.is_open:
+            return f"{self.get_day_of_week_display()}: {self.opening_time.strftime('%H:%M')} - {self.closing_time.strftime('%H:%M')}"
+        return f"{self.get_day_of_week_display()}: Cerrado"
