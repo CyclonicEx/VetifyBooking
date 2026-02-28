@@ -393,3 +393,99 @@ def toggle_service_status(request, service_id):
     status = "activado" if service.is_active else "desactivado"
     messages.success(request, f'Servicio {status} exitosamente')
     return redirect('admin_dashboard:services')
+
+
+@admin_required
+def upload_document_view(request):
+    """Vista para subir documentos PDF"""
+    from booking.models import Document
+    from django.contrib import messages
+    
+    if request.method == 'POST':
+        title = request.POST.get('title')
+        description = request.POST.get('description')
+        category = request.POST.get('category')
+        icon = request.POST.get('icon', '📄')
+        file = request.FILES.get('file')
+        
+        if not all([title, category, file]):
+            messages.error(request, 'Por favor completa todos los campos obligatorios.')
+            return redirect('admin_dashboard:upload_document')
+        
+        # Validar que sea un PDF
+        if not file.name.endswith('.pdf'):
+            messages.error(request, 'Solo se permiten archivos PDF.')
+            return redirect('admin_dashboard:upload_document')
+        
+        try:
+            document = Document.objects.create(
+                title=title,
+                description=description,
+                category=category,
+                icon=icon,
+                file=file,
+                uploaded_by=request.user
+            )
+            messages.success(request, f'Documento "{title}" subido exitosamente.')
+            return redirect('admin_dashboard:upload_document')
+        except Exception as e:
+            messages.error(request, f'Error al subir el documento: {str(e)}')
+            return redirect('admin_dashboard:upload_document')
+    
+    # GET request
+    documents = Document.objects.all().order_by('-created_at')
+    
+    context = {
+        'documents': documents,
+        'category_choices': Document.CATEGORY_CHOICES,
+    }
+    
+    return render(request, 'admin_dashboard/upload_document.html', context)
+
+
+@admin_required
+def delete_document_view(request, document_id):
+    """Vista para eliminar un documento"""
+    from booking.models import Document
+    from django.contrib import messages
+    import os
+    
+    try:
+        document = Document.objects.get(id=document_id)
+        
+        # Eliminar el archivo físico
+        if document.file:
+            if os.path.isfile(document.file.path):
+                os.remove(document.file.path)
+        
+        document_title = document.title
+        document.delete()
+        
+        messages.success(request, f'Documento "{document_title}" eliminado exitosamente.')
+    except Document.DoesNotExist:
+        messages.error(request, 'El documento no existe.')
+    except Exception as e:
+        messages.error(request, f'Error al eliminar el documento: {str(e)}')
+    
+    return redirect('admin_dashboard:upload_document')
+
+
+@admin_required
+def toggle_document_status_view(request, document_id):
+    """Vista para activar/desactivar un documento"""
+    from booking.models import Document
+    from django.contrib import messages
+    
+    try:
+        document = Document.objects.get(id=document_id)
+        document.is_active = not document.is_active
+        document.save()
+        
+        status = "activado" if document.is_active else "desactivado"
+        messages.success(request, f'Documento "{document.title}" {status} exitosamente.')
+    except Document.DoesNotExist:
+        messages.error(request, 'El documento no existe.')
+    except Exception as e:
+        messages.error(request, f'Error al cambiar el estado: {str(e)}')
+    
+    return redirect('admin_dashboard:upload_document')

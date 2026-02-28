@@ -1,6 +1,6 @@
 /* ============================================
-   VETIFY BOOKING - USER STYLES
-   Estilos para la vista de usuarios
+   VETIFY ADMIN DASHBOARD - MAIN STYLES
+   Layout con Header Horizontal
    ============================================ */
 
 /* ===== RESET ===== */
@@ -14,22 +14,18 @@ body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
     background: #f3f4f6;
     min-height: 100vh;
-    color: #0f172a;
 }
-html {
-    border: 10px solid red !important;
-}
+
 /* ============================================
    HEADER
    ============================================ */
 
 .header {
     background: white;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
     position: sticky;
     top: 0;
     z-index: 100;
-    padding: 0;
 }
 
 .container {
@@ -74,15 +70,11 @@ html {
     font-size: 1.5rem;
     font-weight: 700;
     color: #0f172a;
-    margin: 0;
-    line-height: 1.2;
 }
 
 .logo .tagline {
     font-size: 0.75rem;
     color: #64748b;
-    margin: 0;
-    line-height: 1.2;
 }
 
 /* ===== NAVIGATION ===== */
@@ -99,7 +91,7 @@ html {
     text-decoration: none;
     color: #4b5563;
     font-weight: 500;
-    transition: all 0.3s;
+    transition: all 0.3s ease;
     padding: 0.625rem 1rem;
     border-radius: 0.5rem;
     white-space: nowrap;
@@ -124,66 +116,11 @@ html {
 }
 
 /* ============================================
-   FOOTER
+   MAIN CONTENT
    ============================================ */
 
-.footer {
-    background: linear-gradient(180deg, #0f172a 0%, #1e293b 100%);
-    color: white;
-    padding: 3rem 0 1.5rem;
-    margin-top: 4rem;
-}
-
-.footer-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-    gap: 2rem;
-    margin-bottom: 2rem;
-}
-
-.footer-logo {
-    display: flex;
-    align-items: center;
-    gap: 0.75rem;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: white;
-    margin-bottom: 1rem;
-}
-
-.footer-logo .logo-icon {
-    width: 40px;
-    height: 40px;
-}
-
-.footer-logo .logo-icon img {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    filter: brightness(0) invert(1);
-}
-
-.footer h4 {
-    color: white;
-    margin-bottom: 1rem;
-    font-size: 1.125rem;
-}
-
-.footer-text {
-    color: rgba(255, 255, 255, 0.7);
-    margin-bottom: 0.5rem;
-    font-size: 0.9375rem;
-}
-
-.footer-bottom {
-    border-top: 1px solid rgba(255, 255, 255, 0.1);
-    padding-top: 1.5rem;
-    text-align: center;
-}
-
-.footer-bottom p {
-    color: rgba(255, 255, 255, 0.6);
-    font-size: 0.875rem;
+main {
+    padding: 2rem;
 }
 
 /* ============================================
@@ -201,7 +138,7 @@ html {
 .message {
     padding: 1rem 1.5rem;
     margin-bottom: 1rem;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     box-shadow: 0 4px 12px rgba(0,0,0,0.15);
     animation: slideIn 0.3s ease-out;
 }
@@ -242,25 +179,17 @@ html {
 }
 
 /* ============================================
-   MAIN CONTENT
-   ============================================ */
-
-main {
-    min-height: 60vh;
-}
-
-/* ============================================
    BUTTONS
    ============================================ */
 
 .btn {
-    padding: 0.75rem 1.5rem;
+    padding: 0.625rem 1.25rem;
     border: none;
-    border-radius: 0.75rem;
+    border-radius: 0.5rem;
     font-weight: 600;
     cursor: pointer;
     transition: all 0.3s;
-    font-size: 0.9375rem;
+    font-size: 0.875rem;
     text-decoration: none;
     display: inline-flex;
     align-items: center;
@@ -268,14 +197,14 @@ main {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #0284c7 0%, #0369a1 100%);
+    background: #38bdf8;
     color: white;
 }
 
 .btn-primary:hover {
-    background: linear-gradient(135deg, #0369a1 0%, #075985 100%);
+    background: #0284c7;
     transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(2, 132, 199, 0.4);
+    box-shadow: 0 4px 12px rgba(56, 189, 248, 0.4);
 }
 
 .btn-secondary {
@@ -285,27 +214,6 @@ main {
 
 .btn-secondary:hover {
     background: #4b5563;
-    transform: translateY(-2px);
-}
-
-.btn-danger {
-    background: #dc2626;
-    color: white;
-}
-
-.btn-danger:hover {
-    background: #991b1b;
-    transform: translateY(-2px);
-}
-
-.btn-success {
-    background: #10b981;
-    color: white;
-}
-
-.btn-success:hover {
-    background: #059669;
-    transform: translateY(-2px);
 }
 
 /* ============================================
@@ -318,11 +226,6 @@ main {
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     margin-bottom: 1.5rem;
-    transition: all 0.3s;
-}
-
-.card:hover {
-    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
 }
 
 .card-title {
@@ -341,7 +244,6 @@ main {
     border-radius: 1rem;
     padding: 1.5rem;
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-    overflow-x: auto;
 }
 
 .data-table {
@@ -363,7 +265,7 @@ main {
 .data-table th {
     font-weight: 600;
     color: #374151;
-    border-bottom: 2px solid #e5e7eb;
+    border-bottom: 1px solid #e5e7eb;
 }
 
 .data-table td {
@@ -371,135 +273,8 @@ main {
     color: #1f2937;
 }
 
-.data-table tbody tr {
-    transition: background 0.2s;
-}
-
 .data-table tbody tr:hover {
     background: #f9fafb;
-}
-
-/* ============================================
-   BADGES
-   ============================================ */
-
-.badge {
-    display: inline-block;
-    padding: 0.375rem 0.75rem;
-    border-radius: 9999px;
-    font-size: 0.75rem;
-    font-weight: 600;
-}
-
-.badge-success {
-    background: #d1fae5;
-    color: #065f46;
-}
-
-.badge-warning {
-    background: #fef3c7;
-    color: #92400e;
-}
-
-.badge-danger {
-    background: #fee2e2;
-    color: #991b1b;
-}
-
-.badge-info {
-    background: #dbeafe;
-    color: #1e40af;
-}
-
-.badge-primary {
-    background: #bae6fd;
-    color: #075985;
-}
-
-/* ============================================
-   FORMS
-   ============================================ */
-
-.form-group {
-    margin-bottom: 1.5rem;
-}
-
-.form-label {
-    display: block;
-    font-weight: 600;
-    color: #0f172a;
-    margin-bottom: 0.5rem;
-    font-size: 0.9375rem;
-}
-
-.form-input,
-.form-select,
-.form-textarea {
-    width: 100%;
-    padding: 0.875rem;
-    border: 2px solid #e5e7eb;
-    border-radius: 0.75rem;
-    font-size: 1rem;
-    transition: all 0.3s;
-}
-
-.form-input:focus,
-.form-select:focus,
-.form-textarea:focus {
-    outline: none;
-    border-color: #0284c7;
-    box-shadow: 0 0 0 3px rgba(2,132,199,0.1);
-}
-
-.form-textarea {
-    resize: vertical;
-}
-
-/* ============================================
-   LOGIN/REGISTER PAGES
-   ============================================ */
-
-.auth-container {
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);
-}
-
-.auth-card {
-    background: white;
-    border-radius: 1.5rem;
-    padding: 3rem;
-    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
-    max-width: 450px;
-    width: 100%;
-}
-
-.auth-logo {
-    text-align: center;
-    margin-bottom: 2rem;
-}
-
-.auth-logo img {
-    width: 80px;
-    height: 80px;
-    margin-bottom: 1rem;
-}
-
-.auth-title {
-    font-size: 1.875rem;
-    font-weight: 700;
-    color: #0f172a;
-    text-align: center;
-    margin-bottom: 0.5rem;
-}
-
-.auth-subtitle {
-    color: #64748b;
-    text-align: center;
-    margin-bottom: 2rem;
 }
 
 /* ============================================
@@ -510,14 +285,13 @@ main {
     .header-content {
         flex-direction: column;
         gap: 1rem;
-        padding: 1rem 0;
     }
-    
+
     .nav {
         width: 100%;
         justify-content: center;
     }
-    
+
     .nav-link {
         font-size: 0.875rem;
         padding: 0.5rem 0.75rem;
@@ -528,47 +302,17 @@ main {
     .container {
         padding: 0 1rem;
     }
-    
+
+    main {
+        padding: 1rem;
+    }
+
     .nav {
         gap: 0.375rem;
     }
-    
+
     .nav-link {
         font-size: 0.8125rem;
         padding: 0.5rem 0.625rem;
     }
-    
-    .footer {
-        padding: 2rem 0 1rem;
-        margin-top: 2rem;
-    }
-    
-    .footer-grid {
-        grid-template-columns: 1fr;
-        gap: 1.5rem;
-    }
-}
-
-@media (max-width: 480px) {
-    .logo h1 {
-        font-size: 1.25rem;
-    }
-    
-    .logo .tagline {
-        display: none;
-    }
-    
-    .nav-link span:last-child {
-        display: none;
-    }
-    
-    .nav-link {
-        padding: 0.5rem;
-    }
-}
-
-.navbar-brand img {
-    height: 40px !important;
-    width: auto !important;
-    max-height: 40px;
 }

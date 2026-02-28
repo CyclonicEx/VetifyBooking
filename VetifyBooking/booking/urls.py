@@ -15,6 +15,6 @@ urlpatterns = [
     path('register-pet/', views.register_pet_view, name='register_pet'),
     path('edit-pet/<int:pet_id>/', views.edit_pet_view, name='edit_pet'),
     path('delete-pet/<int:pet_id>/', views.delete_pet_view, name='delete_pet'),
-
+    path('documents/', views.documents_view, name='documents'),
 ]
 

@@ -215,3 +215,42 @@ class ClinicSchedule(models.Model):
         if self.is_open:
             return f"{self.get_day_of_week_display()}: {self.opening_time.strftime('%H:%M')} - {self.closing_time.strftime('%H:%M')}"
         return f"{self.get_day_of_week_display()}: Cerrado"
+    
+class Document(models.Model):
+    """Modelo para documentos PDF subidos por el administrador"""
+    CATEGORY_CHOICES = [
+        ('general', 'Información General'),
+        ('care', 'Cuidado de Mascotas'),
+        ('health', 'Salud y Vacunación'),
+        ('nutrition', 'Nutrición'),
+        ('training', 'Entrenamiento'),
+        ('other', 'Otros'),
+    ]
+    
+    title = models.CharField(max_length=200, verbose_name="Título")
+    description = models.TextField(verbose_name="Descripción", blank=True)
+    category = models.CharField(max_length=50, choices=CATEGORY_CHOICES, default='general', verbose_name="Categoría")
+    file = models.FileField(upload_to='documents/', verbose_name="Archivo PDF")
+    icon = models.CharField(max_length=10, default='📄', verbose_name="Icono")
+    uploaded_by = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, verbose_name="Subido por")
+    created_at = models.DateTimeField(auto_now_add=True, verbose_name="Fecha de subida")
+    is_active = models.BooleanField(default=True, verbose_name="Activo")
+    
+    class Meta:
+        ordering = ['-created_at']
+        verbose_name = "Documento"
+        verbose_name_plural = "Documentos"
+    
+    def __str__(self):
+        return self.title
+    
+    def get_file_size(self):
+        """Retorna el tamaño del archivo en formato legible"""
+        try:
+            size = self.file.size
+            for unit in ['B', 'KB', 'MB', 'GB']:
+                if size < 1024.0:
+                    return f"{size:.1f} {unit}"
+                size /= 1024.0
+        except:
+            return "Desconocido"

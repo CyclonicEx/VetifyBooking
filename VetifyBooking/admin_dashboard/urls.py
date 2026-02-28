@@ -33,4 +33,9 @@ urlpatterns = [
     
     # Reportes
     path('reports/', views.reports_view, name='reports'),
+    
+    #Documentos
+    path('documents/', views.upload_document_view, name='upload_document'),
+    path('documents/delete/<int:document_id>/', views.delete_document_view, name='delete_document'),
+    path('documents/toggle/<int:document_id>/', views.toggle_document_status_view, name='toggle_document'),
 ]

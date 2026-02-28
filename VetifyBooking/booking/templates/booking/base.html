@@ -18,7 +18,9 @@
         <div class="container">
             <div class="header-content">
                 <a href="{% url 'home' %}" class="logo">
-                    <div class="logo-icon">🐾</div>
+                    <div class="logo-icon">
+                        <img src="{% static 'images/vetify-logo.png' %}" alt="Vetify Booking Logo">
+                    </div>
                     <div>
                         <h1>Vetify Booking</h1>
                         <p class="tagline">Where Pets Come First</p>
@@ -26,19 +28,49 @@
                 </a>
 
                 <nav class="nav">
-                    <a href="{% url 'home' %}" class="nav-link">🏠 Inicio</a>
-                    <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link">🕐 Horarios</a>
-                    <a href="{% url 'booking' %}" class="nav-link">📅 Reservar</a>
-                    <a href="{% url 'appointments' %}" class="nav-link">📋 Mis Citas</a>
-                    <a href="{% url 'profile' %}" class="nav-link">👤 Mi Perfil</a>
+                    <a href="{% url 'home' %}" class="nav-link">
+                        <span>🏠</span>
+                        <span>Inicio</span>
+                    </a>
+
+                    <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link">
+                        <span>🕐</span>
+                        <span>Horarios</span>
+                    </a>
+
+                    <a href="{% url 'booking' %}" class="nav-link">
+                        <span>📅</span>
+                        <span>Reservar</span>
+                    </a>
+
+                    <a href="{% url 'appointments' %}" class="nav-link">
+                        <span>📋</span>
+                        <span>Mis Citas</span>
+                    </a>
+
+                    <a href="{% url 'documents' %}" class="nav-link">
+                        <span>📚</span>
+                        <span>Documentos</span>
+                    </a>
+
+                    <a href="{% url 'profile' %}" class="nav-link">
+                        <span>👤</span>
+                        <span>Mi Perfil</span>
+                    </a>
                     
                     {% if user.is_superuser %}
-                    <a href="{% url 'admin_dashboard:schedules' %}" class="nav-link" style="background: #fef3c7; color: #92400e; padding: 0.5rem 1rem; border-radius: 0.5rem;">
-                        ⚙️ Admin
+                    <a href="{% url 'admin_dashboard:dashboard' %}" 
+                       class="nav-link" 
+                       style="background: #fef3c7; color: #92400e;">
+                        <span>⚙️</span>
+                        <span>Admin</span>
                     </a>
                     {% endif %}
                     
-                    <a href="{% url 'logout' %}" class="nav-link logout">🚪 Salir</a>
+                    <a href="{% url 'logout' %}" class="nav-link logout">
+                        <span>🚪</span>
+                        <span>Salir</span>
+                    </a>
                 </nav>
             </div>
         </div>
@@ -68,10 +100,14 @@
             <div class="footer-grid">
                 <div>
                     <div class="footer-logo">
-                        <span class="logo-icon">🐾</span>
+                        <span class="logo-icon">
+                            <img src="{% static 'images/vetify-logo.png' %}" alt="Vetify Booking Logo">
+                        </span>
                         <span>Vetify Booking</span>
                     </div>
-                    <p class="footer-text">Providing quality veterinary care with love and compassion.</p>
+                    <p class="footer-text">
+                        Providing quality veterinary care with love and compassion.
+                    </p>
                 </div>
                 
                 <div>

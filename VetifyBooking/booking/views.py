@@ -222,3 +222,39 @@ def schedules_view(request):
     }
     
     return render(request, 'booking/schedules.html', context)
+
+
+
+@login_required
+def documents_view(request):
+    """Vista para que usuarios vean y descarguen documentos"""
+    from .models import Document
+    
+    # Solo mostrar documentos activos
+    documents = Document.objects.filter(is_active=True).order_by('-created_at')
+    
+    # Agrupar por categoría
+    documents_by_category = {}
+    for doc in documents:
+        category = doc.get_category_display()
+        if category not in documents_by_category:
+            documents_by_category[category] = []
+        documents_by_category[category].append(doc)
+    
+    context = {
+        'documents': documents,
+        'documents_by_category': documents_by_category,
+        'total_documents': documents.count(),
+    }
+    
+    return render(request, 'booking/documents.html', context)
+
+from django.shortcuts import render
+from .models import ClinicSchedule  # 👈 IMPORT CORRECTO
+
+def schedules_view(request):
+    schedules = ClinicSchedule.objects.filter(is_active=True).order_by('day', 'start_time')
+    
+    return render(request, 'booking/schedules.html', {
+        'schedules': schedules
+    })
