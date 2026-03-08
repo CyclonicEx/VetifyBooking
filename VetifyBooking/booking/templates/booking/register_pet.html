@@ -13,20 +13,25 @@
     }
 
     .page-header {
+        background: linear-gradient(135deg,#38bdf8,#0284c7);
+        padding: 2rem;
+        border-radius: 1rem;
         margin-bottom: 2rem;
+        color: white;
+        box-shadow: 0 10px 25px rgba(2,132,199,0.25);
     }
 
     .page-header h1 {
         font-size: 2rem;
-        color: #0284c7;
-        margin-bottom: 0.5rem;
+        font-weight: 700;
         display: flex;
         align-items: center;
-        gap: 0.5rem;
+        gap: .75rem;
     }
 
     .page-header p {
-        color: #6b7280;
+        opacity: .9;
+        margin-top: .25rem;
     }
 
     /* Grid Layout */
@@ -376,7 +381,10 @@
 <div class="register-container">
     <!-- Header -->
     <div class="page-header">
-        <h1>Registrar Nueva Mascota 🐾</h1>
+        <h1>
+        <i class="bi bi-paw-fill"></i>
+        Registrar Nueva Mascota
+        </h1>
         <p>Añade a tu compañero peludo a nuestro sistema</p>
     </div>
 
@@ -389,16 +397,18 @@
                 <div class="card">
                     <!-- Section 1: Basic Info -->
                     <div class="form-section">
-                        <h3 class="section-header">📝 Información Básica</h3>
-                        
+                        <h3 class="section-header"><i class="bi bi-card-text"></i> Información Básica</h3>
+
                         <div class="form-group">
-                            <label class="form-label">🐾 Nombre de la Mascota *</label>
-                            <input type="text" name="pet_name" class="form-input" placeholder="ej: Max, Luna, Coco..." required id="petName">
+                            <label class="form-label"><i class="bi bi-paw"></i> Nombre de la Mascota *</label>
+                            <input type="text" name="name" class="form-input" placeholder="Nombre de tu mascota" required id="petName" oninput="updatePreview()">
                         </div>
 
                         <div class="form-group">
                             <label class="form-label">Tipo de Mascota *</label>
+
                             <div class="radio-group">
+
                                 <div class="radio-option">
                                     <div class="radio-card">
                                         <input type="radio" name="pet_type" value="dog" id="dog" checked onchange="updatePreview()">
@@ -408,6 +418,7 @@
                                         </label>
                                     </div>
                                 </div>
+
                                 <div class="radio-option">
                                     <div class="radio-card">
                                         <input type="radio" name="pet_type" value="cat" id="cat" onchange="updatePreview()">
@@ -417,6 +428,7 @@
                                         </label>
                                     </div>
                                 </div>
+
                                 <div class="radio-option">
                                     <div class="radio-card">
                                         <input type="radio" name="pet_type" value="other" id="other" onchange="updatePreview()">
@@ -426,6 +438,7 @@
                                         </label>
                                     </div>
                                 </div>
+
                             </div>
                         </div>
 
@@ -437,21 +450,21 @@
 
                     <!-- Section 2: Physical Characteristics -->
                     <div class="form-section">
-                        <h3 class="section-header">📏 Características Físicas</h3>
+                        <h3 class="section-header"><i class="bi bi-rulers"></i> Características Físicas</h3>
                         
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label class="form-label">🎯 Raza</label>
+                                <label class="form-label"><i class="bi bi-bullseye"></i> Raza</label>
                                 <input type="text" name="breed" class="form-input" placeholder="Seleccionar raza">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">🎨 Color</label>
+                                <label class="form-label"><i class="bi bi-palette"></i> Color</label>
                                 <input type="text" name="color" class="form-input" placeholder="ej: Café, Negro, Blanco">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">🎂 Edad *</label>
+                                <label class="form-label"><i class="bi bi-cake2"></i> Edad *</label>
                                 <div style="display: flex; gap: 0.5rem; align-items: center;">
                                     <input type="number" name="age" class="form-input" placeholder="0" min="0" required id="petAge" onchange="updatePreview()">
                                     <span>años</span>
@@ -459,7 +472,7 @@
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">⚖️ Peso *</label>
+                                <label class="form-label"><i class="bi bi-speedometer2"></i> Peso *</label>
                                 <div style="display: flex; gap: 0.5rem; align-items: center;">
                                     <input type="number" step="0.1" name="weight" class="form-input" placeholder="0.0" min="0" required id="petWeight" onchange="updatePreview()">
                                     <span>kg</span>
@@ -470,7 +483,7 @@
 
                     <!-- Section 3: Health Info -->
                     <div class="form-section">
-                        <h3 class="section-header">💉 Información de Salud</h3>
+                        <h3 class="section-header"><i class="bi bi-heart-pulse"></i> Información de Salud</h3>
                         
                         <div class="form-group">
                             <label class="form-label">Estado de Vacunación *</label>
@@ -479,7 +492,7 @@
                                     <div class="radio-card" style="border-color: #10b981;">
                                         <input type="radio" name="vaccination" value="updated" id="vacUpdated" checked onchange="updatePreview()">
                                         <label for="vacUpdated">
-                                            <div>✅ Al día</div>
+                                            <div><i class="bi bi-check-circle"></i> Al día</div>
                                         </label>
                                     </div>
                                 </div>
@@ -487,7 +500,7 @@
                                     <div class="radio-card" style="border-color: #f59e0b;">
                                         <input type="radio" name="vaccination" value="pending" id="vacPending" onchange="updatePreview()">
                                         <label for="vacPending">
-                                            <div>⏰ Pendiente</div>
+                                            <div><i class="bi bi-clock"></i> Pendiente</div>
                                         </label>
                                     </div>
                                 </div>
@@ -495,7 +508,7 @@
                                     <div class="radio-card" style="border-color: #ef4444;">
                                         <input type="radio" name="vaccination" value="none" id="vacNone" onchange="updatePreview()">
                                         <label for="vacNone">
-                                            <div>❌ Sin vacunas</div>
+                                            <div><i class="bi bi-x-circle"></i> Sin vacunas</div>
                                         </label>
                                     </div>
                                 </div>
@@ -503,7 +516,7 @@
                         </div>
 
                         <div class="form-group">
-                            <label class="form-label">🏥 Alergias o Condiciones Médicas</label>
+                            <label class="form-label"><i class="bi bi-hospital"></i> Alergias o Condiciones Médicas</label>
                             <textarea name="allergies" class="form-input" placeholder="Describe alergias, condiciones médicas o medicamentos que esté tomando..."></textarea>
                         </div>
 
@@ -532,16 +545,16 @@
 
                     <!-- Section 4: Emergency Contact -->
                     <div class="form-section">
-                        <h3 class="section-header">🚨 Contacto de Emergencia (Opcional)</h3>
+                        <h3 class="section-header"><i class="bi bi-exclamation-triangle"></i> Contacto de Emergencia (Opcional)</h3>
                         
                         <div class="form-grid-2">
                             <div class="form-group">
-                                <label class="form-label">👤 Nombre Completo</label>
+                                <label class="form-label"><i class="bi bi-person"></i> Nombre Completo</label>
                                 <input type="text" name="emergency_name" class="form-input" placeholder="Persona de confianza">
                             </div>
 
                             <div class="form-group">
-                                <label class="form-label">📱 Teléfono</label>
+                                <label class="form-label"><i class="bi bi-telephone"></i> Teléfono</label>
                                 <input type="tel" name="emergency_phone" class="form-input" placeholder="+52 555 000 0000">
                             </div>
                         </div>
@@ -549,10 +562,10 @@
 
                     <!-- Section 5: Photo -->
                     <div class="form-section">
-                        <h3 class="section-header">📷 Foto de la Mascota (Opcional)</h3>
+                        <h3 class="section-header"><i class="bi bi-camera"></i> Foto de la Mascota (Opcional)</h3>
                         
                         <div class="file-upload" onclick="document.getElementById('photoInput').click()">
-                            <div class="file-upload-icon">📤</div>
+                            <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
                             <p style="font-weight: 600; margin-bottom: 0.25rem;">Arrastra una foto aquí</p>
                             <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem;">o haz clic para seleccionar</p>
                             <button type="button" class="btn btn-outline" style="font-size: 0.875rem;">Seleccionar Archivo</button>
@@ -578,35 +591,35 @@
                         
                         <div class="pet-preview">
                             <div class="preview-header">
-                                <div class="preview-avatar" id="previewEmoji">🐕</div>
+                                <div class="preview-avatar" id="previewEmoji"><i class="bi bi-paw-fill"></i></div>
                                 <div class="preview-info">
                                     <h3 id="previewName">Nombre de tu mascota</h3>
                                     <div class="badge" id="previewType">Perro</div>
-                                    <div class="preview-details">🎂 <span id="previewAge">0</span> años</div>
-                                    <div class="preview-details">⚖️ <span id="previewWeight">0</span> kg</div>
-                                    <div class="preview-details" id="previewVac">💉 Vacunas al día</div>
+                                    <div class="preview-details"><i class="bi bi-cake2"></i> <span id="previewAge">0</span> años</div>
+                                    <div class="preview-details"><i class="bi bi-speedometer2"></i> <span id="previewWeight">0</span> kg</div>
+                                    <div class="preview-details" id="previewVac"><i class="bi bi-heart-pulse"></i> Vacunas al día</div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <div class="tips-card">
-                        <h3 class="tips-title">💡 Consejos</h3>
+                        <h3 class="tips-title"><i class="bi bi-lightbulb"></i> Consejos</h3>
                         <div class="tips-list">
                             <div class="tip-item">
-                                <span>✓</span>
+                                <span><i class="bi bi-check-circle"></i></span>
                                 <span>Nombre corto y fácil de recordar</span>
                             </div>
                             <div class="tip-item">
-                                <span>✓</span>
+                                <span><i class="bi bi-check-circle"></i></span>
                                 <span>Peso y edad actualizados</span>
                             </div>
                             <div class="tip-item">
-                                <span>✓</span>
+                                <span><i class="bi bi-check-circle"></i></span>
                                 <span>Información de alergias completa</span>
                             </div>
                             <div class="tip-item">
-                                <span>✓</span>
+                                <span><i class="bi bi-check-circle"></i></span>
                                 <span>Foto clara de tu mascota</span>
                             </div>
                         </div>
@@ -637,9 +650,15 @@
         // Type
         const type = document.querySelector('input[name="pet_type"]:checked').value;
         const typeLabels = { dog: 'Perro', cat: 'Gato', other: 'Otro' };
-        const emojis = { dog: '🐕', cat: '🐈', other: '🐰' };
+
+        const icons = {
+            dog: '🐕',
+            cat: '🐈',
+            other: '🐰'
+        };
+
         document.getElementById('previewType').textContent = typeLabels[type];
-        document.getElementById('previewEmoji').textContent = emojis[type];
+        document.getElementById('previewEmoji').textContent = icons[type];
 
         // Age
         const age = document.getElementById('petAge').value || '0';
@@ -651,12 +670,14 @@
 
         // Vaccination
         const vac = document.querySelector('input[name="vaccination"]:checked').value;
+
         const vacLabels = {
-            updated: '💉 Vacunas al día',
-            pending: '⏰ Vacunas pendientes',
-            none: '❌ Sin vacunas'
+            updated: '<i class="bi bi-heart-pulse"></i> Vacunas al día',
+            pending: '<i class="bi bi-clock"></i> Vacunas pendientes',
+            none: '<i class="bi bi-x-circle"></i> Sin vacunas'
         };
-        document.getElementById('previewVac').textContent = vacLabels[vac];
+
+        document.getElementById('previewVac').innerHTML = vacLabels[vac];
     }
 
     // Update preview on input change

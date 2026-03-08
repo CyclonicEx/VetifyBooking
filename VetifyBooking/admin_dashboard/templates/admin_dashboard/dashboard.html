@@ -275,14 +275,20 @@
 {% block content %}
 <!-- KPI Cards -->
 <div class="kpi-grid">
+
     <div class="kpi-card">
         <div class="kpi-header">
             <div>
                 <div class="kpi-value">{{ total_appointments }}</div>
                 <div class="kpi-label">Total de Citas</div>
-                <div class="kpi-change kpi-change-positive">↑ Todas las citas</div>
+                <div class="kpi-change kpi-change-positive">
+                    ↑ Todas las citas
+                </div>
             </div>
-            <div class="kpi-icon kpi-icon-blue">📅</div>
+
+            <div class="kpi-icon kpi-icon-blue">
+                <i class="bi bi-calendar-check"></i>
+            </div>
         </div>
     </div>
 
@@ -291,9 +297,14 @@
             <div>
                 <div class="kpi-value">{{ total_users }}</div>
                 <div class="kpi-label">Usuarios Registrados</div>
-                <div class="kpi-change kpi-change-positive">↑ Activos</div>
+                <div class="kpi-change kpi-change-positive">
+                    ↑ Activos
+                </div>
             </div>
-            <div class="kpi-icon kpi-icon-green">👥</div>
+
+            <div class="kpi-icon kpi-icon-green">
+                <i class="bi bi-people"></i>
+            </div>
         </div>
     </div>
 
@@ -302,9 +313,14 @@
             <div>
                 <div class="kpi-value">{{ total_pets }}</div>
                 <div class="kpi-label">Mascotas Registradas</div>
-                <div class="kpi-change kpi-change-positive">↑ En sistema</div>
+                <div class="kpi-change kpi-change-positive">
+                    ↑ En sistema
+                </div>
             </div>
-            <div class="kpi-icon kpi-icon-purple">🐾</div>
+
+            <div class="kpi-icon kpi-icon-purple">
+                <i class="bi bi-heart"></i>
+            </div>
         </div>
     </div>
 
@@ -313,20 +329,31 @@
             <div>
                 <div class="kpi-value">{{ today_appointments }}</div>
                 <div class="kpi-label">Citas Hoy</div>
-                <div class="kpi-change kpi-change-positive">↑ {{ pending_appointments }} pendientes</div>
+                <div class="kpi-change kpi-change-positive">
+                    ↑ {{ pending_appointments }} pendientes
+                </div>
             </div>
-            <div class="kpi-icon kpi-icon-orange">📋</div>
+
+            <div class="kpi-icon kpi-icon-orange">
+                <i class="bi bi-clipboard-data"></i>
+            </div>
         </div>
     </div>
+
 </div>
 
 <!-- Charts -->
 <div class="chart-grid">
+
     <!-- Line Chart -->
     <div class="chart-card">
         <div class="chart-header">
-            <h3 class="chart-title">📊 Citas de los Últimos 7 Días</h3>
+            <h3 class="chart-title">
+                <i class="bi bi-bar-chart-line"></i>
+                Citas de los Últimos 7 Días
+            </h3>
         </div>
+
         <div class="chart-canvas" id="appointmentsChart">
             <!-- Chart will be rendered here -->
         </div>
@@ -335,109 +362,196 @@
     <!-- Pie Chart -->
     <div class="chart-card">
         <div class="chart-header">
-            <h3 class="chart-title">🐾 Mascotas por Tipo</h3>
+            <h3 class="chart-title">
+                <i class="bi bi-heart"></i>
+                Mascotas por Tipo
+            </h3>
         </div>
+
         <div class="pie-chart">
+
             <div class="pie-visual"></div>
+
             <div class="pie-legend">
+
                 {% for pet_type in pets_by_type %}
                 <div class="legend-item">
+
                     <div class="legend-label">
-                        <div class="legend-color" style="background: 
+
+                        <div
+                            class="legend-color"
+                            style="background:
                             {% if pet_type.pet_type == 'dog' %}#3b82f6
                             {% elif pet_type.pet_type == 'cat' %}#ec4899
-                            {% else %}#8b5cf6{% endif %}"></div>
-                        <span>{{ pet_type.get_pet_type_display|default:pet_type.pet_type|title }}</span>
+                            {% else %}#8b5cf6{% endif %}">
+                        </div>
+
+                        <span>
+                            {{ pet_type.get_pet_type_display|default:pet_type.pet_type|title }}
+                        </span>
+
                     </div>
-                    <div class="legend-value">{{ pet_type.count }}</div>
+
+                    <div class="legend-value">
+                        {{ pet_type.count }}
+                    </div>
+
                 </div>
                 {% endfor %}
+
             </div>
+
         </div>
     </div>
+
 </div>
 
 <!-- Tables -->
 <div class="table-grid">
+
     <!-- Latest Appointments -->
     <div class="table-card">
+
         <div class="table-header">
-            <h3 class="table-title">📅 Últimas Citas</h3>
-            <a href="{% url 'admin_dashboard:appointments' %}" class="view-all">Ver todas →</a>
+            <h3 class="table-title">
+                <i class="bi bi-calendar"></i>
+                Últimas Citas
+            </h3>
+
+            <a href="{% url 'admin_dashboard:appointments' %}" class="view-all">
+                Ver todas →
+            </a>
         </div>
+
         <table class="simple-table">
+
             {% for appointment in latest_appointments|slice:":5" %}
+
             <tr>
                 <td class="label">
-                    {{ appointment.user.username }}<br>
-                    <small style="color: #9ca3af;">{{ appointment.date|date:"d M Y" }}</small>
+                    {{ appointment.user.username }}
+                    <br>
+                    <small style="color: #9ca3af;">
+                        {{ appointment.date|date:"d M Y" }}
+                    </small>
                 </td>
-                <td class="value">{{ appointment.time }}</td>
+
+                <td class="value">
+                    {{ appointment.time }}
+                </td>
             </tr>
+
             {% empty %}
+
             <tr>
-                <td colspan="2" style="text-align: center; color: #9ca3af; padding: 2rem;">
+                <td colspan="2" style="text-align:center;color:#9ca3af;padding:2rem;">
                     No hay citas registradas
                 </td>
             </tr>
+
             {% endfor %}
+
         </table>
+
     </div>
 
     <!-- Active Veterinarians -->
     <div class="table-card">
+
         <div class="table-header">
-            <h3 class="table-title">👨‍⚕️ Veterinarios Activos</h3>
-            <a href="{% url 'admin_dashboard:veterinarians' %}" class="view-all">Ver todos →</a>
+            <h3 class="table-title">
+                <i class="bi bi-person-badge"></i>
+                Veterinarios Activos
+            </h3>
+
+            <a href="{% url 'admin_dashboard:veterinarians' %}" class="view-all">
+                Ver todos →
+            </a>
         </div>
+
         <table class="simple-table">
+
             {% for vet in active_vets %}
+
             <tr>
                 <td class="label">
-                    {{ vet.name }}<br>
-                    <small style="color: #9ca3af;">{{ vet.get_specialty_display }}</small>
+                    {{ vet.name }}
+                    <br>
+
+                    <small style="color:#9ca3af;">
+                        {{ vet.get_specialty_display }}
+                    </small>
                 </td>
-                <td class="value">{{ vet.years_experience }} años</td>
+
+                <td class="value">
+                    {{ vet.years_experience }} años
+                </td>
             </tr>
+
             {% empty %}
+
             <tr>
-                <td colspan="2" style="text-align: center; color: #9ca3af; padding: 2rem;">
+                <td colspan="2" style="text-align:center;color:#9ca3af;padding:2rem;">
                     No hay veterinarios registrados
                 </td>
             </tr>
+
             {% endfor %}
+
         </table>
+
     </div>
+
 </div>
+
 {% endblock %}
 
 {% block extra_js %}
 <script>
-    // Render appointments chart
-    const appointmentsData = {{ appointments_by_day|safe }};
-    const chartContainer = document.getElementById('appointmentsChart');
-    
-    if (appointmentsData && appointmentsData.length > 0) {
-        const maxValue = Math.max(...appointmentsData.map(d => d.count), 1);
-        
-        chartContainer.innerHTML = appointmentsData.map(data => {
-            const height = (data.count / maxValue) * 100;
-            return `
-                <div class="chart-bar" style="height: ${height}%">
-                    <div class="chart-bar-value">${data.count}</div>
-                    <div class="chart-bar-label">${data.date}</div>
-                </div>
-            `;
-        }).join('');
-    }
 
-    // Auto-hide messages after 5 seconds
-    setTimeout(() => {
-        const messages = document.querySelectorAll('.message');
-        messages.forEach(msg => {
-            msg.style.animation = 'slideOut 0.3s ease-out forwards';
-            setTimeout(() => msg.remove(), 300);
-        });
-    }, 5000);
+const appointmentsData = {{ appointments_by_day|safe }};
+const chartContainer = document.getElementById('appointmentsChart');
+
+if (appointmentsData && appointmentsData.length > 0) {
+
+    const maxValue = Math.max(...appointmentsData.map(d => d.count), 1);
+
+    chartContainer.innerHTML = appointmentsData.map(data => {
+
+        const height = (data.count / maxValue) * 100;
+
+        return `
+            <div class="chart-bar" style="height:${height}%">
+
+                <div class="chart-bar-value">
+                    ${data.count}
+                </div>
+
+                <div class="chart-bar-label">
+                    ${data.date}
+                </div>
+
+            </div>
+        `;
+
+    }).join('');
+
+}
+
+setTimeout(() => {
+
+    const messages = document.querySelectorAll('.message');
+
+    messages.forEach(msg => {
+
+        msg.style.animation = 'slideOut 0.3s ease-out forwards';
+
+        setTimeout(() => msg.remove(), 300);
+
+    });
+
+}, 5000);
+
 </script>
 {% endblock %}

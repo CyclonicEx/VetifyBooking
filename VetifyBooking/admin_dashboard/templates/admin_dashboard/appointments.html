@@ -201,7 +201,9 @@
             </div>
             
             <div class="filter-group">
-                <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-search"></i> Filtrar
+                </button>
             </div>
         </div>
     </form>
@@ -211,7 +213,7 @@
 <div class="table-container">
     <div class="table-header">
         <div>
-            <h2 class="table-title">📅 Listado de Citas</h2>
+            <h2 class="table-title"><i class="bi bi-calendar2-check"></i> Listado de Citas</h2>
             <p class="table-count">{{ total_count }} cita{{ total_count|pluralize }} encontrada{{ total_count|pluralize }}</p>
         </div>
     </div>
@@ -255,7 +257,7 @@
                     <a href="{% url 'admin_dashboard:delete_appointment' appointment.id %}" 
                        class="action-btn btn-delete"
                        onclick="return confirm('¿Eliminar esta cita?')">
-                        🗑️ Eliminar
+                        <i class="bi bi-trash"></i> Eliminar
                     </a>
                 </td>
             </tr>
@@ -264,7 +266,7 @@
     </table>
     {% else %}
     <div class="empty-state">
-        <div class="empty-icon">📅</div>
+        <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
         <h3>No hay citas</h3>
         <p>No se encontraron citas con los filtros seleccionados</p>
     </div>

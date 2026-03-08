@@ -104,7 +104,7 @@
 
     .vet-card:hover {
         border-color: #38bdf8;
-        box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        box-shadow: 0 4px 12px rgba(56,189,248,0.2);
         transform: translateY(-2px);
     }
 
@@ -130,7 +130,7 @@
         font-size: 2rem;
         flex-shrink: 0;
         border: 3px solid white;
-        box-shadow: 0 2px 8px rgba(56, 189, 248, 0.3);
+        box-shadow: 0 2px 8px rgba(56,189,248,0.3);
     }
 
     .vet-info h3 {
@@ -149,20 +149,9 @@
         margin-bottom: 0.25rem;
     }
 
-    .badge-specialty {
-        background: #dbeafe;
-        color: #1e40af;
-    }
-
-    .badge-active {
-        background: #d1fae5;
-        color: #065f46;
-    }
-
-    .badge-inactive {
-        background: #fee2e2;
-        color: #991b1b;
-    }
+    .badge-specialty { background: #dbeafe; color: #1e40af; }
+    .badge-active { background: #d1fae5; color: #065f46; }
+    .badge-inactive { background: #fee2e2; color: #991b1b; }
 
     .vet-experience {
         font-size: 0.875rem;
@@ -186,9 +175,7 @@
         margin-bottom: 0.5rem;
     }
 
-    .detail-row:last-child {
-        margin-bottom: 0;
-    }
+    .detail-row:last-child { margin-bottom: 0; }
 
     .vet-schedule {
         background: #eff6ff;
@@ -230,14 +217,8 @@
         display: inline-block;
     }
 
-    .btn-toggle {
-        background: #fef3c7;
-        color: #92400e;
-    }
-
-    .btn-toggle:hover {
-        background: #fde68a;
-    }
+    .btn-toggle { background: #fef3c7; color: #92400e; }
+    .btn-toggle:hover { background: #fde68a; }
 
     .empty-state {
         text-align: center;
@@ -253,95 +234,97 @@
 {% endblock %}
 
 {% block content %}
-<!-- Filters -->
-<div class="filters-bar">
-    <form method="GET">
-        <div class="filters-grid">
-            <div class="filter-group">
-                <label class="filter-label">Especialidad</label>
-                <select name="specialty" class="filter-input">
-                    <option value="all" {% if specialty_filter == 'all' %}selected{% endif %}>Todas</option>
-                    <option value="general" {% if specialty_filter == 'general' %}selected{% endif %}>Medicina General</option>
-                    <option value="surgery" {% if specialty_filter == 'surgery' %}selected{% endif %}>Cirugía</option>
-                    <option value="dental" {% if specialty_filter == 'dental' %}selected{% endif %}>Odontología</option>
-                    <option value="dermatology" {% if specialty_filter == 'dermatology' %}selected{% endif %}>Dermatología</option>
-                    <option value="cardiology" {% if specialty_filter == 'cardiology' %}selected{% endif %}>Cardiología</option>
-                    <option value="emergency" {% if specialty_filter == 'emergency' %}selected{% endif %}>Emergencias</option>
-                </select>
-            </div>
-            
-            <div class="filter-group">
-                <label class="filter-label">Buscar</label>
-                <input type="text" name="search" class="filter-input" placeholder="Nombre, email, cédula..." value="{{ search }}">
-            </div>
-            
-            <div class="filter-group">
-                <button type="submit" class="btn btn-primary">🔍 Filtrar</button>
-            </div>
-        </div>
-    </form>
-</div>
+    <div class="filters-bar">
+        <form method="GET">
+            <div class="filters-grid">
+                <div class="filter-group">
+                    <label class="filter-label">Especialidad</label>
+                    <select name="specialty" class="filter-input">
+                        <option value="all" {% if specialty_filter == 'all' %}selected{% endif %}>Todas</option>
+                        <option value="general" {% if specialty_filter == 'general' %}selected{% endif %}>Medicina General</option>
+                        <option value="surgery" {% if specialty_filter == 'surgery' %}selected{% endif %}>Cirugía</option>
+                        <option value="dental" {% if specialty_filter == 'dental' %}selected{% endif %}>Odontología</option>
+                        <option value="dermatology" {% if specialty_filter == 'dermatology' %}selected{% endif %}>Dermatología</option>
+                        <option value="cardiology" {% if specialty_filter == 'cardiology' %}selected{% endif %}>Cardiología</option>
+                        <option value="emergency" {% if specialty_filter == 'emergency' %}selected{% endif %}>Emergencias</option>
+                    </select>
+                </div>
 
-<!-- Table -->
-<div class="table-container">
-    <div class="table-header">
-        <div>
-            <h2 class="table-title">👨‍⚕️ Listado de Veterinarios</h2>
-            <p class="table-count">{{ total_count }} veterinario{{ total_count|pluralize }} - {{ active_count }} activo{{ active_count|pluralize }}</p>
-        </div>
+                <div class="filter-group">
+                    <label class="filter-label">Buscar</label>
+                    <input type="text" name="search" class="filter-input" placeholder="Nombre, email, cédula..." value="{{ search }}">
+                </div>
+
+                <div class="filter-group">
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-search"></i> Filtrar
+                    </button>
+                </div>
+            </div>
+        </form>
     </div>
 
-    {% if veterinarians %}
-    <div class="vets-grid">
-        {% for vet in veterinarians %}
-        <div class="vet-card {% if not vet.is_active %}inactive{% endif %}">
-            <div class="vet-header">
-                <div class="vet-photo">{{ vet.get_emoji }}</div>
-                <div class="vet-info">
-                    <h3>Dr(a). {{ vet.name }}</h3>
-                    <div class="badge badge-specialty">{{ vet.get_specialty_display }}</div>
-                    <div class="badge {% if vet.is_active %}badge-active{% else %}badge-inactive{% endif %}">
-                        {% if vet.is_active %}✓ Activo{% else %}✗ Inactivo{% endif %}
+    <div class="table-container">
+        <div class="table-header">
+            <div>
+                <h2 class="table-title">
+                    <i class="bi bi-person-badge"></i> Listado de Veterinarios
+                </h2>
+                <p class="table-count">
+                    {{ total_count }} veterinario{{ total_count|pluralize }} - {{ active_count }} activo{{ active_count|pluralize }}
+                </p>
+            </div>
+        </div>
+
+        {% if veterinarians %}
+            <div class="vets-grid">
+                {% for vet in veterinarians %}
+                    <div class="vet-card {% if not vet.is_active %}inactive{% endif %}">
+                        <div class="vet-header">
+                            <div class="vet-photo">{{ vet.get_emoji }}</div>
+                            <div class="vet-info">
+                                <h3>Dr(a). {{ vet.name }}</h3>
+                                <div class="badge badge-specialty">{{ vet.get_specialty_display }}</div>
+                                <div class="badge {% if vet.is_active %}badge-active{% else %}badge-inactive{% endif %}">
+                                    {% if vet.is_active %} ✓ Activo {% else %} ✗ Inactivo {% endif %}
+                                </div>
+                                <p class="vet-experience">
+                                    <i class="bi bi-mortarboard"></i> {{ vet.years_experience }} años de experiencia
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="vet-details">
+                            <div class="detail-row"><i class="bi bi-envelope"></i> {{ vet.email }}</div>
+                            <div class="detail-row"><i class="bi bi-telephone"></i> {{ vet.phone }}</div>
+                            <div class="detail-row"><i class="bi bi-person-vcard"></i> Cédula: {{ vet.license_number }}</div>
+                        </div>
+
+                        <div class="vet-schedule">
+                            <div class="schedule-title"><i class="bi bi-calendar"></i> Horario de Atención</div>
+                            <div class="schedule-time">
+                                <i class="bi bi-clock"></i> {{ vet.start_time|time:"H:i" }} - {{ vet.end_time|time:"H:i" }}
+                            </div>
+                        </div>
+
+                        <div class="vet-actions">
+                            <a href="{% url 'admin_dashboard:toggle_vet_status' vet.id %}" class="action-btn btn-toggle" onclick="return confirm('¿Cambiar estado del veterinario?')">
+                                {% if vet.is_active %}
+                                    <i class="bi bi-lock"></i> Desactivar
+                                {% else %}
+                                    <i class="bi bi-check-circle"></i> Activar
+                                {% endif %}
+                            </a>
+                        </div>
                     </div>
-                    <p class="vet-experience">🎓 {{ vet.years_experience }} años de experiencia</p>
-                </div>
+                {% endfor %}
             </div>
-
-            <div class="vet-details">
-                <div class="detail-row">
-                    📧 {{ vet.email }}
-                </div>
-                <div class="detail-row">
-                    📱 {{ vet.phone }}
-                </div>
-                <div class="detail-row">
-                    🆔 Cédula: {{ vet.license_number }}
-                </div>
+        {% else %}
+            <div class="empty-state">
+                <div class="empty-icon"><i class="bi bi-person-badge"></i></div>
+                <h3>No hay veterinarios</h3>
+                <p>No se encontraron veterinarios con los filtros seleccionados</p>
             </div>
-
-            <div class="vet-schedule">
-                <div class="schedule-title">📅 Horario de Atención</div>
-                <div class="schedule-time">
-                    🕐 {{ vet.start_time|time:"H:i" }} - {{ vet.end_time|time:"H:i" }}
-                </div>
-            </div>
-
-            <div class="vet-actions">
-                <a href="{% url 'admin_dashboard:toggle_vet_status' vet.id %}" 
-                   class="action-btn btn-toggle"
-                   onclick="return confirm('¿Cambiar estado del veterinario?')">
-                    {% if vet.is_active %}🔒 Desactivar{% else %}✅ Activar{% endif %}
-                </a>
-            </div>
-        </div>
-        {% endfor %}
+        {% endif %}
     </div>
-    {% else %}
-    <div class="empty-state">
-        <div class="empty-icon">👨‍⚕️</div>
-        <h3>No hay veterinarios</h3>
-        <p>No se encontraron veterinarios con los filtros seleccionados</p>
-    </div>
-    {% endif %}
-</div>
 {% endblock %}

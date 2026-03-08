@@ -193,22 +193,20 @@
 {% endblock %}
 
 {% block content %}
-<!-- Search Bar -->
 <div class="search-bar">
     <form method="GET">
-        <input type="text" 
-               name="search" 
-               class="search-input" 
-               placeholder="🔍 Buscar servicio por nombre o descripción..." 
+        <input type="text"
+               name="search"
+               class="search-input"
+               placeholder="Buscar servicio por nombre o descripción..."
                value="{{ search }}">
     </form>
 </div>
 
-<!-- Table -->
 <div class="table-container">
     <div class="table-header">
         <div>
-            <h2 class="table-title">💉 Listado de Servicios</h2>
+            <h2 class="table-title"><i class="bi bi-bandaid"></i> Listado de Servicios</h2>
             <p class="table-count">{{ total_count }} servicio{{ total_count|pluralize }} - {{ active_count }} activo{{ active_count|pluralize }}</p>
         </div>
     </div>
@@ -218,36 +216,50 @@
         {% for service in services %}
         <div class="service-card {% if not service.is_active %}inactive{% endif %}">
             <div class="service-icon">{{ service.icon }}</div>
+
             <h3 class="service-name">{{ service.name }}</h3>
+
             <div class="badge {% if service.is_active %}badge-active{% else %}badge-inactive{% endif %}">
-                {% if service.is_active %}✓ Activo{% else %}✗ Inactivo{% endif %}
+                {% if service.is_active %}
+                <i class="bi bi-check"></i> Activo
+                {% else %}
+                <i class="bi bi-x"></i> Inactivo
+                {% endif %}
             </div>
+
             <p class="service-description">{{ service.description }}</p>
-            
+
             <div class="service-details">
                 <div class="detail-row">
-                    <span class="detail-label">⏱️ Duración</span>
+                    <span class="detail-label"><i class="bi bi-clock"></i> Duración</span>
                     <span class="detail-value">{{ service.duration }} min</span>
                 </div>
+
                 <div class="detail-row">
-                    <span class="detail-label">💰 Precio</span>
+                    <span class="detail-label"><i class="bi bi-cash"></i> Precio</span>
                     <span class="detail-value">${{ service.price }}</span>
                 </div>
             </div>
 
             <div class="service-actions">
-                <a href="{% url 'admin_dashboard:toggle_service_status' service.id %}" 
+                <a href="{% url 'admin_dashboard:toggle_service_status' service.id %}"
                    class="action-btn btn-toggle"
                    onclick="return confirm('¿Cambiar estado del servicio?')">
-                    {% if service.is_active %}🔒 Desactivar{% else %}✅ Activar{% endif %}
+                    {% if service.is_active %}
+                    <i class="bi bi-lock"></i> Desactivar
+                    {% else %}
+                    <i class="bi bi-check-circle"></i> Activar
+                    {% endif %}
                 </a>
             </div>
+
         </div>
         {% endfor %}
     </div>
+
     {% else %}
     <div class="empty-state">
-        <div class="empty-icon">💉</div>
+        <div class="empty-icon"><i class="bi bi-bandaid"></i></div>
         <h3>No hay servicios</h3>
         <p>No se encontraron servicios con los criterios de búsqueda</p>
     </div>

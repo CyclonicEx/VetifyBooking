@@ -2890,3 +2890,13 @@ main {
     height:60px;
     width:auto;
 }
+
+.radio-emoji {
+    font-size: 2rem;
+    color: #0284c7;
+}
+
+.radio-emoji i{
+font-size:28px;
+color:#2563eb;
+}
