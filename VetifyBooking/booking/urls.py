@@ -41,4 +41,8 @@ urlpatterns = [
         ),
         name="password_change_done",
     ),
+    
+    path('historial/', views.medical_history_view, name='medical_history'),
+    path('historial/consulta/<int:consultation_id>/pdf/', views.export_consultation_pdf, name='export_consultation_pdf'),
+    path('historial/receta/<int:prescription_id>/pdf/', views.export_prescription_pdf, name='export_prescription_pdf'),
 ]

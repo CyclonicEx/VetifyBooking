@@ -96,6 +96,14 @@
                         </span>
                         <span class="sidebar-link-text">Veterinarios</span>
                     </a>
+
+                    <a href="{% url 'admin_dashboard:consultations' %}"
+                    class="sidebar-link {% if request.resolver_match.url_name == 'consultations' %}active{% endif %}">
+                        <span class="sidebar-link-icon">
+                            <i class="bi bi-file-medical"></i>
+                        </span>
+                        <span class="sidebar-link-text">Consultas y Recetas</span>
+                    </a>
                 </div>
 
                 <!-- Sección: Configuración -->

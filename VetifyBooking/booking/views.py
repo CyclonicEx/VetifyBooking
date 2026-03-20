@@ -49,7 +49,7 @@ def register_view(request):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            messages.success(request, 'Account created successfully!')
+            messages.success(request, 'Cuenta creada exitosamente!')
             return redirect('home')
     else:
         form = RegisterForm()
@@ -443,11 +443,79 @@ def delete_pet(request, pet_id):
         pet.delete()
         messages.success(request, f'{pet_name} ha sido eliminado de tu perfil.')
         return redirect('profile')
-    
+
     context = {
         'pet': pet,
     }
-    
+
     return render(request, 'booking/confirm_delete_pet.html', context)
 
+# =============================
+# HISTORIAL MÉDICO
+# =============================
+from django.utils import timezone
 
+@login_required
+def medical_history_view(request):
+    appointments = Appointment.objects.filter(
+        user=request.user
+    ).select_related(
+        'pet'
+    ).prefetch_related(
+        'consultation__veterinarian',
+        'consultation__prescription__items'
+    ).order_by('-date', '-time')
+
+    context = {
+        'appointments': appointments,
+        'today': timezone.now().date(),
+    }
+    return render(request, 'booking/medical_history.html', context)
+
+# =============================
+# EXPORTAR PDF
+# =============================
+from django.http import HttpResponse
+from django.template.loader import render_to_string
+from xhtml2pdf import pisa
+from io import BytesIO
+from .models import MedicalConsultation, MedicalPrescription
+
+@login_required
+def export_consultation_pdf(request, consultation_id):
+    consultation = get_object_or_404(
+        MedicalConsultation,
+        id=consultation_id,
+        appointment__user=request.user
+    )
+    html_string = render_to_string('booking/pdf_consultation.html', {
+        'consultation': consultation,
+    })
+    buffer = BytesIO()
+    pisa.CreatePDF(html_string, dest=buffer)
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="consulta_{consultation.appointment.pet.name}_{consultation.appointment.date}.pdf"'
+    return response
+
+
+@login_required
+def export_prescription_pdf(request, prescription_id):
+    prescription = get_object_or_404(
+        MedicalPrescription,
+        id=prescription_id,
+        consultation__appointment__user=request.user
+    )
+    html_string = render_to_string('booking/pdf_prescription.html', {
+        'prescription': prescription,
+    })
+    buffer = BytesIO()
+    pisa.CreatePDF(html_string, dest=buffer)
+    pdf = buffer.getvalue()
+    buffer.close()
+
+    response = HttpResponse(pdf, content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename="receta_{prescription.consultation.appointment.pet.name}_{prescription.consultation.appointment.date}.pdf"'
+    return response

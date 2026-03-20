@@ -506,3 +506,211 @@ def add_veterinarian(request):
         )
         messages.success(request, 'Veterinario agregado exitosamente.')
     return redirect('admin_dashboard:veterinarians')
+
+# =========================
+#   CONSULTAS Y RECETAS
+# =========================
+from booking.models import MedicalConsultation, MedicalPrescription, PrescriptionItem
+
+@admin_required
+def consultations_view(request):
+    """Lista de todas las consultas"""
+    search = request.GET.get('search', '')
+    
+    consultations = MedicalConsultation.objects.select_related(
+        'appointment__pet',
+        'appointment__user',
+        'veterinarian'
+    ).order_by('-created_at')
+    
+    if search:
+        consultations = consultations.filter(
+            Q(appointment__pet__name__icontains=search) |
+            Q(appointment__user__username__icontains=search) |
+            Q(diagnosis__icontains=search)
+        )
+    
+    context = {
+        'consultations': consultations,
+        'search': search,
+        'total_count': consultations.count(),
+    }
+    return render(request, 'admin_dashboard/consultations.html', context)
+
+
+@admin_required
+def add_consultation_view(request):
+    """Crear nueva consulta"""
+    appointments = Appointment.objects.select_related(
+        'pet', 'user'
+    ).order_by('-date')
+    
+    veterinarians = Veterinarian.objects.filter(is_active=True)
+
+    if request.method == 'POST':
+        appointment_id = request.POST.get('appointment')
+        vet_id = request.POST.get('veterinarian')
+
+        # Verificar que no exista ya una consulta para esa cita
+        if MedicalConsultation.objects.filter(appointment_id=appointment_id).exists():
+            messages.error(request, 'Ya existe una consulta para esta cita.')
+            return redirect('admin_dashboard:add_consultation')
+
+        consultation = MedicalConsultation.objects.create(
+            appointment_id=appointment_id,
+            veterinarian_id=vet_id if vet_id else None,
+            reason=request.POST.get('reason'),
+            symptoms=request.POST.get('symptoms'),
+            diagnosis=request.POST.get('diagnosis'),
+            treatment=request.POST.get('treatment'),
+            notes=request.POST.get('notes', ''),
+            weight_at_visit=request.POST.get('weight_at_visit') or None,
+            temperature=request.POST.get('temperature') or None,
+            next_visit=request.POST.get('next_visit') or None,
+        )
+        messages.success(request, 'Consulta creada exitosamente.')
+        
+        # Si marcó que hay receta, redirige a crearla
+        if request.POST.get('has_prescription'):
+            return redirect('admin_dashboard:add_prescription', consultation_id=consultation.id)
+        
+        return redirect('admin_dashboard:consultations')
+
+    context = {
+        'appointments': appointments,
+        'veterinarians': veterinarians,
+    }
+    return render(request, 'admin_dashboard/add_consultation.html', context)
+
+
+@admin_required
+def edit_consultation_view(request, consultation_id):
+    """Editar consulta existente"""
+    consultation = get_object_or_404(MedicalConsultation, id=consultation_id)
+    veterinarians = Veterinarian.objects.filter(is_active=True)
+
+    if request.method == 'POST':
+        consultation.veterinarian_id = request.POST.get('veterinarian') or None
+        consultation.reason = request.POST.get('reason')
+        consultation.symptoms = request.POST.get('symptoms')
+        consultation.diagnosis = request.POST.get('diagnosis')
+        consultation.treatment = request.POST.get('treatment')
+        consultation.notes = request.POST.get('notes', '')
+        consultation.weight_at_visit = request.POST.get('weight_at_visit') or None
+        consultation.temperature = request.POST.get('temperature') or None
+        consultation.next_visit = request.POST.get('next_visit') or None
+        consultation.save()
+
+        messages.success(request, 'Consulta actualizada exitosamente.')
+        return redirect('admin_dashboard:consultations')
+
+    context = {
+        'consultation': consultation,
+        'veterinarians': veterinarians,
+    }
+    return render(request, 'admin_dashboard/edit_consultation.html', context)
+
+
+@admin_required
+def delete_consultation_view(request, consultation_id):
+    consultation = get_object_or_404(MedicalConsultation, id=consultation_id)
+    consultation.delete()
+    messages.success(request, 'Consulta eliminada.')
+    return redirect('admin_dashboard:consultations')
+
+
+@admin_required
+def add_prescription_view(request, consultation_id):
+    """Crear receta para una consulta"""
+    consultation = get_object_or_404(MedicalConsultation, id=consultation_id)
+
+    # Si ya tiene receta, redirige a editarla
+    if hasattr(consultation, 'prescription'):
+        return redirect('admin_dashboard:edit_prescription', prescription_id=consultation.prescription.id)
+
+    if request.method == 'POST':
+        prescription = MedicalPrescription.objects.create(
+            consultation=consultation,
+            general_instructions=request.POST.get('general_instructions'),
+            warnings=request.POST.get('warnings', ''),
+        )
+
+        # Medicamentos (pueden venir múltiples)
+        medications = request.POST.getlist('medication')
+        doses = request.POST.getlist('dose')
+        frequencies = request.POST.getlist('frequency')
+        durations = request.POST.getlist('duration')
+        routes = request.POST.getlist('route')
+        instructions_list = request.POST.getlist('instructions')
+
+        for i in range(len(medications)):
+            if medications[i]:
+                PrescriptionItem.objects.create(
+                    prescription=prescription,
+                    medication=medications[i],
+                    dose=doses[i] if i < len(doses) else '',
+                    frequency=frequencies[i] if i < len(frequencies) else '',
+                    duration=durations[i] if i < len(durations) else '',
+                    route=routes[i] if i < len(routes) else 'oral',
+                    instructions=instructions_list[i] if i < len(instructions_list) else '',
+                )
+
+        messages.success(request, 'Receta creada exitosamente.')
+        return redirect('admin_dashboard:consultations')
+
+    context = {
+        'consultation': consultation,
+        'routes': PrescriptionItem.ROUTES,
+    }
+    return render(request, 'admin_dashboard/add_prescription.html', context)
+
+
+@admin_required
+def edit_prescription_view(request, prescription_id):
+    """Editar receta existente"""
+    prescription = get_object_or_404(MedicalPrescription, id=prescription_id)
+
+    if request.method == 'POST':
+        prescription.general_instructions = request.POST.get('general_instructions')
+        prescription.warnings = request.POST.get('warnings', '')
+        prescription.save()
+
+        # Eliminar items anteriores y recrear
+        prescription.items.all().delete()
+
+        medications = request.POST.getlist('medication')
+        doses = request.POST.getlist('dose')
+        frequencies = request.POST.getlist('frequency')
+        durations = request.POST.getlist('duration')
+        routes = request.POST.getlist('route')
+        instructions_list = request.POST.getlist('instructions')
+
+        for i in range(len(medications)):
+            if medications[i]:
+                PrescriptionItem.objects.create(
+                    prescription=prescription,
+                    medication=medications[i],
+                    dose=doses[i] if i < len(doses) else '',
+                    frequency=frequencies[i] if i < len(frequencies) else '',
+                    duration=durations[i] if i < len(durations) else '',
+                    route=routes[i] if i < len(routes) else 'oral',
+                    instructions=instructions_list[i] if i < len(instructions_list) else '',
+                )
+
+        messages.success(request, 'Receta actualizada exitosamente.')
+        return redirect('admin_dashboard:consultations')
+
+    context = {
+        'prescription': prescription,
+        'routes': PrescriptionItem.ROUTES,
+    }
+    return render(request, 'admin_dashboard/edit_prescription.html', context)
+
+
+@admin_required
+def delete_prescription_view(request, prescription_id):
+    prescription = get_object_or_404(MedicalPrescription, id=prescription_id)
+    consultation_id = prescription.consultation.id
+    prescription.delete()
+    messages.success(request, 'Receta eliminada.')
+    return redirect('admin_dashboard:consultations')

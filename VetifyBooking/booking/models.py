@@ -299,3 +299,124 @@ class UserProfile(models.Model):
 
     def __str__(self):
         return f"Perfil de {self.user.username}"
+    
+# =========================
+#   MEDICAL CONSULTATION
+# =========================
+class MedicalConsultation(models.Model):
+
+    appointment = models.OneToOneField(
+        Appointment,
+        on_delete=models.CASCADE,
+        related_name='consultation',
+        verbose_name="Cita"
+    )
+    veterinarian = models.ForeignKey(
+        Veterinarian,
+        on_delete=models.SET_NULL,
+        null=True,
+        verbose_name="Veterinario"
+    )
+
+    # Campos clínicos
+    reason = models.CharField(max_length=300, verbose_name="Motivo de consulta")
+    symptoms = models.TextField(verbose_name="Síntomas observados")
+    diagnosis = models.TextField(verbose_name="Diagnóstico")
+    treatment = models.TextField(verbose_name="Tratamiento indicado")
+    notes = models.TextField(blank=True, verbose_name="Notas adicionales")
+
+    # Signos vitales
+    weight_at_visit = models.DecimalField(
+        max_digits=5, decimal_places=2,
+        null=True, blank=True,
+        verbose_name="Peso (kg)"
+    )
+    temperature = models.DecimalField(
+        max_digits=4, decimal_places=1,
+        null=True, blank=True,
+        verbose_name="Temperatura (°C)"
+    )
+
+    next_visit = models.DateField(null=True, blank=True, verbose_name="Próxima visita")
+
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        verbose_name = "Consulta Médica"
+        verbose_name_plural = "Consultas Médicas"
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return f"Consulta - {self.appointment.pet.name} ({self.appointment.date})"
+
+
+# =========================
+#   MEDICAL PRESCRIPTION
+# =========================
+class MedicalPrescription(models.Model):
+
+    consultation = models.OneToOneField(
+        MedicalConsultation,
+        on_delete=models.CASCADE,
+        related_name='prescription',
+        verbose_name="Consulta"
+    )
+
+    general_instructions = models.TextField(
+        verbose_name="Indicaciones generales"
+    )
+    warnings = models.TextField(
+        blank=True,
+        verbose_name="Advertencias"
+    )
+
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        verbose_name = "Receta Médica"
+        verbose_name_plural = "Recetas Médicas"
+
+    def __str__(self):
+        return f"Receta - {self.consultation.appointment.pet.name} ({self.consultation.appointment.date})"
+
+
+# =========================
+#   PRESCRIPTION ITEM
+# =========================
+class PrescriptionItem(models.Model):
+
+    ROUTES = [
+        ('oral', 'Oral'),
+        ('topical', 'Tópico'),
+        ('injectable', 'Inyectable'),
+        ('ophthalmic', 'Oftálmico'),
+        ('otic', 'Ótico'),
+        ('other', 'Otro'),
+    ]
+
+    prescription = models.ForeignKey(
+        MedicalPrescription,
+        on_delete=models.CASCADE,
+        related_name='items',
+        verbose_name="Receta"
+    )
+
+    medication = models.CharField(max_length=200, verbose_name="Medicamento")
+    dose = models.CharField(max_length=100, verbose_name="Dosis")
+    frequency = models.CharField(max_length=100, verbose_name="Frecuencia")
+    duration = models.CharField(max_length=100, verbose_name="Duración")
+    route = models.CharField(
+        max_length=20,
+        choices=ROUTES,
+        default='oral',
+        verbose_name="Vía de administración"
+    )
+    instructions = models.TextField(blank=True, verbose_name="Instrucciones específicas")
+
+    class Meta:
+        verbose_name = "Medicamento"
+        verbose_name_plural = "Medicamentos"
+
+    def __str__(self):
+        return f"{self.medication} - {self.dose}"
