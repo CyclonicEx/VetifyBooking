@@ -385,13 +385,13 @@
         <i class="bi bi-paw-fill"></i>
             {{ page_title|default:"Registrar Nueva Mascota" }}
         </h1>
-        <p>{{ page_description|default:"Añade a tu compañero peludo a nuestro sistema" }}</p>
+        <p>{{ page_description|default:" Añade a tu compañero peludo a nuestro sistema" }}</p>
     </div>
 
     <form method="POST" enctype="multipart/form-data"
     action="{% if pet %}{% url 'edit_pet' pet.id %}{% else %}{% url 'register_pet' %}{% endif %}">
         {% csrf_token %}
-        
+
         <div class="form-grid">
             <!-- Left Column: Form -->
             <div>

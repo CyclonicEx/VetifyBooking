@@ -76,15 +76,6 @@ class Pet(models.Model):
 # =========================
 class Appointment(models.Model):
 
-    SERVICES = [
-        ('checkup', 'Consulta General'),
-        ('vaccination', 'Vacunación'),
-        ('dental', 'Limpieza Dental'),
-        ('grooming', 'Estética'),
-        ('surgery', 'Consulta de Cirugía'),
-        ('emergency', 'Emergencia'),
-    ]
-
     STATUS_CHOICES = [
         ('pending', 'Pendiente'),
         ('confirmed', 'Confirmada'),
@@ -95,7 +86,14 @@ class Appointment(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='appointments')
     pet = models.ForeignKey(Pet, on_delete=models.CASCADE, related_name='appointments')
 
-    service = models.CharField(max_length=20, choices=SERVICES)
+    service = models.ForeignKey(
+        'Service',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        verbose_name="Servicio"
+    )
+
     date = models.DateField()
     time = models.TimeField()
 
@@ -106,7 +104,6 @@ class Appointment(models.Model):
     )
 
     notes = models.TextField(blank=True)
-
     created_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:

@@ -19,11 +19,17 @@ class RegisterForm(UserCreationForm):
                 'class': 'form-input'
             })
 
-from django import forms
-from .models import Appointment, Pet
 
+from django import forms
+from .models import Appointment, Pet, Service
 
 class AppointmentForm(forms.ModelForm):
+
+    service = forms.ModelChoiceField(
+        queryset=Service.objects.filter(is_active=True).order_by('name'),
+        empty_label="Seleccionar servicio...",
+        label="Servicio"
+    )
 
     class Meta:
         model = Appointment
@@ -37,11 +43,9 @@ class AppointmentForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         user = kwargs.pop('user', None)
         super().__init__(*args, **kwargs)
-
-        # 🔥 SOLO mostrar mascotas del usuario logueado
         if user:
             self.fields['pet'].queryset = Pet.objects.filter(owner=user)
-            
+
 
 from django import forms
 from django.contrib.auth.models import User

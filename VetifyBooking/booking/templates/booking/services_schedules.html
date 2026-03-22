@@ -56,16 +56,6 @@
                         <span>Reservar</span>
                     </a>
                 </div>
-                
-                {% if service.is_active %}
-                <div class="service-badge service-badge-active">
-                    <i class="bi bi-check-circle-fill"></i> Disponible
-                </div>
-                {% else %}
-                <div class="service-badge service-badge-inactive">
-                    <i class="bi bi-pause-circle-fill"></i> No disponible
-                </div>
-                {% endif %}
             </div>
             {% empty %}
             <div class="empty-state">

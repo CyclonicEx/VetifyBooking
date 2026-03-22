@@ -18,7 +18,9 @@
                         <select name="appointment" required style="width:100%; padding:0.75rem; border:1px solid #d1d5db; border-radius:0.5rem; font-size:0.875rem;">
                             <option value="">Seleccionar cita...</option>
                             {% for apt in appointments %}
-                            <option value="{{ apt.id }}">{{ apt.date|date:"d/m/Y" }} - {{ apt.pet.name }} ({{ apt.user.username }})</option>
+                            <option value="{{ apt.id }}" {% if selected_appointment == apt.id|stringformat:"s" %}selected{% endif %}>
+                                {{ apt.date|date:"d/m/Y" }} - {{ apt.pet.name }} ({{ apt.user.username }})
+                            </option>
                             {% endfor %}
                         </select>
                     </div>

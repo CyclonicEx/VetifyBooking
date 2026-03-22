@@ -215,64 +215,43 @@ def register_pet_view(request):
 
 @login_required
 def services_schedules_view(request):
-
-    services = Service.objects.filter(
-        is_active=True
-    ).order_by('name')
-
-    service_icons = {
-        'consulta': '🩺',
-        'vacunación': '💉',
-        'cirugía': '🔬',
-        'urgencia': '🚑',
-        'peluquería': '✂️',
-        'baño': '🛁',
-    }
-
-    for service in services:
-        service.icon = '💉'
-        for key, icon in service_icons.items():
-            if key in service.name.lower():
-                service.icon = icon
-                break
+    services = Service.objects.filter(is_active=True).order_by('name')
 
     days = [
-        ('Lunes', 0), ('Martes', 1), ('Miércoles', 2),
-        ('Jueves', 3), ('Viernes', 4),
-        ('Sábado', 5), ('Domingo', 6)
+        ('Lunes',     'monday'),
+        ('Martes',    'tuesday'),
+        ('Miércoles', 'wednesday'),
+        ('Jueves',    'thursday'),
+        ('Viernes',   'friday'),
+        ('Sábado',    'saturday'),
+        ('Domingo',   'sunday'),
     ]
 
-    schedules = []
-    today = date.today().weekday()
+    today_name = ['monday','tuesday','wednesday','thursday','friday','saturday','sunday'][date.today().weekday()]
 
-    for name, day in days:
-        schedule = ClinicSchedule.objects.filter(
-            day_of_week=day
-        ).first()
+    schedules = []
+    for name, day_key in days:
+        schedule = ClinicSchedule.objects.filter(day_of_week=day_key).first()
 
         if not schedule:
-            schedule = ClinicSchedule(
-                day_of_week=day,
-                is_open=False
-            )
+            schedule = ClinicSchedule(day_of_week=day_key, is_open=False)
 
         schedule.day_display = name
-        schedule.is_today = (day == today)
+        schedule.is_today = (day_key == today_name)
+
+        # Compatibilidad con el template que usa start_time/end_time
+        schedule.start_time = schedule.opening_time
+        schedule.end_time = schedule.closing_time
+
         schedules.append(schedule)
 
-    veterinarians = Veterinarian.objects.filter(
-        is_active=True
-    ).order_by('name')
+    veterinarians = Veterinarian.objects.filter(is_active=True).order_by('name')
 
-    return render(
-        request,
-        'booking/services_schedules.html',
-        {
-            'services': services,
-            'schedules': schedules,
-            'veterinarians': veterinarians,
-        }
-    )
+    return render(request, 'booking/services_schedules.html', {
+        'services': services,
+        'schedules': schedules,
+        'veterinarians': veterinarians,
+    })
 
 
 # =============================
@@ -519,3 +498,5 @@ def export_prescription_pdf(request, prescription_id):
     response = HttpResponse(pdf, content_type='application/pdf')
     response['Content-Disposition'] = f'attachment; filename="receta_{prescription.consultation.appointment.pet.name}_{prescription.consultation.appointment.date}.pdf"'
     return response
+
+

@@ -91,45 +91,79 @@ def dashboard_view(request):
     
     return render(request, 'admin_dashboard/dashboard.html', context)
 
-
 @admin_required
 def appointments_view(request):
-    """Vista de gestión de citas"""
-    
-    # Filtros
     status_filter = request.GET.get('status', 'all')
     date_filter = request.GET.get('date', '')
     search = request.GET.get('search', '')
-    
+
     appointments = Appointment.objects.select_related('user', 'pet').order_by('-date', '-time')
-    
-    # Aplicar filtros
+
     if status_filter == 'today':
         appointments = appointments.filter(date=timezone.now().date())
     elif status_filter == 'upcoming':
         appointments = appointments.filter(date__gte=timezone.now().date())
     elif status_filter == 'past':
         appointments = appointments.filter(date__lt=timezone.now().date())
-    
+    elif status_filter in ['pending', 'confirmed', 'completed', 'cancelled']:
+        appointments = appointments.filter(status=status_filter)
+
     if date_filter:
         appointments = appointments.filter(date=date_filter)
-    
+
     if search:
         appointments = appointments.filter(
             Q(user__username__icontains=search) |
             Q(user__email__icontains=search) |
             Q(pet__name__icontains=search)
         )
-    
+
+    # Para el modal de crear cita
+    from django.contrib.auth.models import User
+    users = User.objects.filter(is_superuser=False).order_by('username')
+    pets = Pet.objects.select_related('owner').order_by('name')
+    services = Service.objects.filter(is_active=True)
+
     context = {
         'appointments': appointments,
         'status_filter': status_filter,
         'date_filter': date_filter,
         'search': search,
         'total_count': appointments.count(),
+        'today': timezone.now().date(),
+        'users': users,
+        'pets': pets,
+        'services': services,
     }
-    
     return render(request, 'admin_dashboard/appointments.html', context)
+
+
+@admin_required
+def change_appointment_status(request, appointment_id):
+    appointment = get_object_or_404(Appointment, id=appointment_id)
+    if request.method == 'POST':
+        new_status = request.POST.get('status')
+        if new_status in ['pending', 'confirmed', 'completed', 'cancelled']:
+            appointment.status = new_status
+            appointment.save()
+            messages.success(request, f'Estado actualizado a {appointment.get_status_display()}')
+    return redirect('admin_dashboard:appointments')
+
+
+@admin_required
+def create_appointment_admin(request):
+    if request.method == 'POST':
+        Appointment.objects.create(
+            user_id=request.POST.get('user'),
+            pet_id=request.POST.get('pet'),
+            service_id=request.POST.get('service'),
+            date=request.POST.get('date'),
+            time=request.POST.get('time'),
+            notes=request.POST.get('notes', ''),
+            status='confirmed'
+        )
+        messages.success(request, 'Cita creada exitosamente.')
+    return redirect('admin_dashboard:appointments')
 
 
 @admin_required
@@ -540,18 +574,21 @@ def consultations_view(request):
 
 @admin_required
 def add_consultation_view(request):
-    """Crear nueva consulta"""
     appointments = Appointment.objects.select_related(
         'pet', 'user'
+    ).filter(
+        status='completed'
+    ).exclude(
+        consultation__isnull=False
     ).order_by('-date')
     
     veterinarians = Veterinarian.objects.filter(is_active=True)
+    selected_appointment = request.GET.get('appointment', '')
 
     if request.method == 'POST':
         appointment_id = request.POST.get('appointment')
         vet_id = request.POST.get('veterinarian')
 
-        # Verificar que no exista ya una consulta para esa cita
         if MedicalConsultation.objects.filter(appointment_id=appointment_id).exists():
             messages.error(request, 'Ya existe una consulta para esta cita.')
             return redirect('admin_dashboard:add_consultation')
@@ -569,19 +606,18 @@ def add_consultation_view(request):
             next_visit=request.POST.get('next_visit') or None,
         )
         messages.success(request, 'Consulta creada exitosamente.')
-        
-        # Si marcó que hay receta, redirige a crearla
+
         if request.POST.get('has_prescription'):
             return redirect('admin_dashboard:add_prescription', consultation_id=consultation.id)
-        
+
         return redirect('admin_dashboard:consultations')
 
     context = {
         'appointments': appointments,
         'veterinarians': veterinarians,
+        'selected_appointment': selected_appointment,
     }
     return render(request, 'admin_dashboard/add_consultation.html', context)
-
 
 @admin_required
 def edit_consultation_view(request, consultation_id):
@@ -714,3 +750,112 @@ def delete_prescription_view(request, prescription_id):
     prescription.delete()
     messages.success(request, 'Receta eliminada.')
     return redirect('admin_dashboard:consultations')
+
+
+from django.contrib.auth.models import User
+from booking.models import UserProfile
+
+@admin_required
+def create_user_view(request):
+    if request.method == 'POST':
+        username = request.POST.get('username')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        first_name = request.POST.get('first_name', '')
+        last_name = request.POST.get('last_name', '')
+        phone = request.POST.get('phone', '')
+        address = request.POST.get('address', '')
+
+        # Verificar que no exista el username o email
+        if User.objects.filter(username=username).exists():
+            messages.error(request, 'Ese nombre de usuario ya existe.')
+            return redirect('admin_dashboard:users')
+
+        if User.objects.filter(email=email).exists():
+            messages.error(request, 'Ese email ya está registrado.')
+            return redirect('admin_dashboard:users')
+
+        # Crear usuario
+        user = User.objects.create_user(
+            username=username,
+            email=email,
+            password=password,
+            first_name=first_name,
+            last_name=last_name,
+        )
+
+        # Crear o actualizar perfil
+        profile, created = UserProfile.objects.get_or_create(user=user)
+        profile.phone = phone
+        profile.address = address
+        profile.save()
+
+        messages.success(request, f'Usuario {username} creado exitosamente.')
+        return redirect('admin_dashboard:users')
+
+    return redirect('admin_dashboard:users')
+
+# =========================
+#   SERVICIOS CRUD
+# =========================
+@admin_required
+def create_service_view(request):
+    if request.method == 'POST':
+        Service.objects.create(
+            name=request.POST.get('name'),
+            description=request.POST.get('description'),
+            duration=request.POST.get('duration'),
+            price=request.POST.get('price'),
+            icon=request.POST.get('icon', 'bi bi-clipboard-pulse'),
+            is_active=True
+        )
+        messages.success(request, 'Servicio creado exitosamente.')
+    return redirect('admin_dashboard:services')
+
+
+@admin_required
+def edit_service_view(request, service_id):
+    service = get_object_or_404(Service, id=service_id)
+    if request.method == 'POST':
+        service.name = request.POST.get('name')
+        service.description = request.POST.get('description')
+        service.duration = request.POST.get('duration')
+        service.price = request.POST.get('price')
+        service.icon = request.POST.get('icon', 'bi bi-clipboard-pulse')
+        service.save()
+        messages.success(request, 'Servicio actualizado.')
+    return redirect('admin_dashboard:services')
+
+
+# =========================
+#   HORARIOS CRUD
+# =========================
+@admin_required
+def edit_schedule_view(request, schedule_id):
+    schedule = get_object_or_404(ClinicSchedule, id=schedule_id)
+    if request.method == 'POST':
+        schedule.is_open = request.POST.get('is_open') == 'on'
+        schedule.opening_time = request.POST.get('opening_time')
+        schedule.closing_time = request.POST.get('closing_time')
+        schedule.notes = request.POST.get('notes', '')
+        schedule.save()
+        messages.success(request, 'Horario actualizado.')
+    return redirect('admin_dashboard:schedules')
+
+
+@admin_required
+def create_schedule_view(request):
+    if request.method == 'POST':
+        day = request.POST.get('day_of_week')
+        if ClinicSchedule.objects.filter(day_of_week=day).exists():
+            messages.error(request, 'Ya existe un horario para ese día.')
+            return redirect('admin_dashboard:schedules')
+        ClinicSchedule.objects.create(
+            day_of_week=day,
+            is_open=request.POST.get('is_open') == 'on',
+            opening_time=request.POST.get('opening_time'),
+            closing_time=request.POST.get('closing_time'),
+            notes=request.POST.get('notes', '')
+        )
+        messages.success(request, 'Horario creado exitosamente.')
+    return redirect('admin_dashboard:schedules')
