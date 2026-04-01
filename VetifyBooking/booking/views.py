@@ -325,44 +325,27 @@ def profile(request):
 
 @login_required
 def edit_profile(request):
-    """
-    Vista para editar el perfil del usuario
-    """
-    # Obtener o crear el perfil del usuario
     profile, created = UserProfile.objects.get_or_create(user=request.user)
     
     if request.method == 'POST':
-        # Actualizar información del usuario
         request.user.first_name = request.POST.get('first_name', '')
         request.user.last_name = request.POST.get('last_name', '')
         request.user.email = request.POST.get('email', '')
         request.user.save()
         
-        # Actualizar información del perfil
         profile.phone = request.POST.get('phone', '')
         profile.address = request.POST.get('address', '')
         profile.bio = request.POST.get('bio', '')
         
-        # Manejar fecha de nacimiento
-        date_of_birth = request.POST.get('date_of_birth')
-        if date_of_birth:
-            try:
-                profile.date_of_birth = datetime.strptime(date_of_birth, '%Y-%m-%d').date()
-            except ValueError:
-                pass
+        if request.FILES.get('avatar'):
+            profile.avatar = request.FILES['avatar']
         
         profile.save()
-        
         messages.success(request, '¡Tu perfil ha sido actualizado exitosamente!')
         return redirect('profile')
     
-    context = {
-        'user': request.user,
-        'profile': profile,
-    }
-    
+    context = {'user': request.user, 'profile': profile}
     return render(request, 'booking/edit_profile.html', context)
-
 
 @login_required
 def update_avatar(request):
@@ -397,28 +380,39 @@ def edit_pet(request, pet_id):
         pet = get_object_or_404(Pet, id=pet_id)
     else:
         pet = get_object_or_404(Pet, id=pet_id, owner=request.user)
-        
-    next_url = request.GET.get('next') or request.POST.get('next')
 
+    next_url = request.GET.get('next') or request.POST.get('next')
     if not next_url:
         next_url = reverse('profile')
 
     if request.method == "POST":
         pet.name = request.POST.get("name")
-        pet.species = request.POST.get("species")
-        pet.breed = request.POST.get("breed")
+        pet.pet_type = request.POST.get("species") or pet.pet_type
+        pet.other_type = request.POST.get("other_type", '')
+        pet.breed = request.POST.get("breed", '')
+        pet.color = request.POST.get("color", '')
         pet.date_of_birth = request.POST.get('date_of_birth') or None
         pet.weight = request.POST.get("weight")
-        pet.notes = request.POST.get("notes")
+        pet.vaccination_status = request.POST.get('vaccination', 'updated')
+        pet.allergies = request.POST.get('allergies', '')
+        pet.friendly_with_people = request.POST.get('friendly_people') == 'on'
+        pet.friendly_with_animals = request.POST.get('friendly_animals') == 'on'
+        pet.nervous_at_vet = request.POST.get('nervous') == 'on'
+        pet.special_care = request.POST.get('special_care') == 'on'
+        pet.emergency_contact_name = request.POST.get('emergency_name', '')
+        pet.emergency_contact_phone = request.POST.get('emergency_phone', '')
+
+        if request.FILES.get('photo'):
+            pet.photo = request.FILES['photo']
+
         pet.save()
         return redirect(next_url)
 
     return render(request, "booking/register_pet.html", {
-    "pet": pet,
-    "next": next_url,
-    "today": date.today().isoformat()
-})
-
+        "pet": pet,
+        "next": next_url,
+        "today": date.today().isoformat()
+    })
 
 @login_required
 def delete_pet(request, pet_id):

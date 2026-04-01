@@ -284,7 +284,14 @@
                 {% for vet in veterinarians %}
                     <div class="vet-card {% if not vet.is_active %}inactive{% endif %}">
                         <div class="vet-header">
-                            <div class="vet-photo">{{ vet.get_emoji }}</div>
+                            <div class="vet-photo">
+                                {% if vet.photo %}
+                                    <img src="{{ vet.photo.url }}" alt="{{ vet.name }}"
+                                        style="width:100%; height:100%; object-fit:cover; border-radius:50%;">
+                                {% else %}
+                                    {{ vet.get_emoji }}
+                                {% endif %}
+                            </div>
                             <div class="vet-info">
                                 <h3>Dr(a). {{ vet.name }}</h3>
                                 <div class="badge badge-specialty">{{ vet.get_specialty_display }}</div>
@@ -342,7 +349,7 @@
                         style="background:none; border:none; font-size:1.5rem; cursor:pointer; color:#6b7280;">✕</button>
             </div>
 
-            <form method="POST" action="{% url 'admin_dashboard:add_veterinarian' %}">
+            <form method="POST" action="{% url 'admin_dashboard:add_veterinarian' %}" enctype="multipart/form-data">
                 {% csrf_token %}
 
                 <div style="display:grid; grid-template-columns:1fr 1fr; gap:1rem;">
@@ -394,6 +401,10 @@
                         <input type="time" name="end_time" class="filter-input" value="17:00">
                     </div>
 
+                </div>
+                <div style="display:flex; flex-direction:column; gap:0.5rem; grid-column:1/-1;">
+                    <label style="font-size:0.875rem; font-weight:600; color:#374151;">Foto</label>
+                    <input type="file" name="photo" accept="image/*" class="filter-input">
                 </div>
 
                 <div style="display:flex; gap:1rem; margin-top:1.5rem;">

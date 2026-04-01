@@ -376,7 +376,12 @@
 
                     <div class="pet-header">
                         <div class="pet-avatar">
-                            {{ pet.get_emoji }}
+                            {% if pet.photo %}
+                                <img src="{{ pet.photo.url }}" alt="{{ pet.name }}"
+                                    style="width:100%; height:100%; object-fit:cover; border-radius:0.75rem;">
+                            {% else %}
+                                {{ pet.get_emoji }}
+                            {% endif %}
                         </div>
                         <div class="pet-info">
                             <h3>{{ pet.name }}</h3>

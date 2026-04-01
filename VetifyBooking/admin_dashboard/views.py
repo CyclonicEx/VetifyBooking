@@ -531,7 +531,7 @@ def toggle_document_status_view(request, document_id):
 @admin_required
 def add_veterinarian(request):
     if request.method == 'POST':
-        Veterinarian.objects.create(
+        vet = Veterinarian.objects.create(
             name=request.POST.get('name'),
             email=request.POST.get('email'),
             phone=request.POST.get('phone', ''),
@@ -542,6 +542,9 @@ def add_veterinarian(request):
             end_time=request.POST.get('end_time', '17:00'),
             is_active=True
         )
+        if request.FILES.get('photo'):
+            vet.photo = request.FILES['photo']
+            vet.save()
         messages.success(request, 'Veterinario agregado exitosamente.')
     return redirect('admin_dashboard:veterinarians')
 
@@ -899,6 +902,8 @@ def admin_register_view(request):
 
     return render(request, 'admin_dashboard/admin_register.html')
 
+from booking.models import UserProfile
+
 @admin_required
 def admin_profile_view(request):
     if request.method == 'POST':
@@ -907,12 +912,16 @@ def admin_profile_view(request):
         request.user.email = request.POST.get('email', '')
         request.user.save()
 
-        # Contraseña opcional
         new_password = request.POST.get('new_password', '')
         if new_password:
             request.user.set_password(new_password)
             request.user.save()
             update_session_auth_hash(request, request.user)
+
+        if request.FILES.get('avatar'):
+            profile, _ = UserProfile.objects.get_or_create(user=request.user)
+            profile.avatar = request.FILES['avatar']
+            profile.save()
 
         messages.success(request, 'Perfil actualizado exitosamente.')
         return redirect('admin_dashboard:admin_profile')

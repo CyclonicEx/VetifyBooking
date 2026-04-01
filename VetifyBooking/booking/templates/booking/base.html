@@ -62,9 +62,23 @@
                 </a>
 
                 <!-- PERFIL -->
-                <a href="{% url 'profile' %}" class="nav-link">
-                    <i class="bi bi-person-circle"></i>
-                </a>
+                <div class="user-info">
+                    <a href="{% url 'profile' %}"
+                    style="display:flex; align-items:center; gap:0.75rem; text-decoration:none;">
+                        
+                        <div class="user-avatar">
+                            {% if user.profile.avatar %}
+                                <img src="{{ user.profile.avatar.url }}">
+                            {% else %}
+                                {{ user.first_name.0|upper }}{{ user.last_name.0|upper }}
+                            {% endif %}
+                        </div>
+
+                        <span class="user-name">
+                            {{ user.get_full_name|default:user.username }}
+                        </span>
+                    </a>
+                </div>
 
                 {% if user.is_superuser %}
                 <a href="{% url 'admin_dashboard:dashboard' %}" class="nav-link admin-link">
@@ -110,7 +124,6 @@
             <div>
                 <div class="footer-logo">
                     <img src="{% static 'images/vetify-logo.png' %}" alt="Vetify Logo">
-                    <span>Vetify Booking</span>
                 </div>
 
                 <p class="footer-text">

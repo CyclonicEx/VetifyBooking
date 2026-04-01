@@ -164,12 +164,13 @@
             <div class="pet-card">
                 <div class="pet-card-header">
                     <div class="pet-avatar">
-                        {% if pet.pet_type == "dog" %}
-                            🐶
-                        {% elif pet.pet_type == "cat" %}
-                            🐱
+                        {% if pet.photo %}
+                            <img src="{{ pet.photo.url }}" alt="{{ pet.name }}"
+                                style="width:100%; height:100%; object-fit:cover; border-radius:inherit;">
                         {% else %}
-                            🐾
+                            {% if pet.pet_type == "dog" %}🐶
+                            {% elif pet.pet_type == "cat" %}🐱
+                            {% else %}🐾{% endif %}
                         {% endif %}
                     </div>
                     <div class="pet-info">

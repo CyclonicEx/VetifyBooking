@@ -608,11 +608,19 @@
                         <h3 class="section-header"><i class="bi bi-camera"></i> Foto de la Mascota (Opcional)</h3>
                         
                         <div class="file-upload" onclick="document.getElementById('photoInput').click()">
-                            <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
-                            <p style="font-weight: 600; margin-bottom: 0.25rem;">Arrastra una foto aquí</p>
-                            <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem;">o haz clic para seleccionar</p>
-                            <button type="button" class="btn btn-outline" style="font-size: 0.875rem;">Seleccionar Archivo</button>
-                            <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem;">PNG, JPG hasta 5MB</p>
+    
+                            <!-- Preview de imagen -->
+                            <img id="imagePreview" style="display:none; width:100%; max-height:200px; object-fit:cover; border-radius:0.5rem; margin-bottom:1rem;" />
+
+                            <!-- Contenido original -->
+                            <div id="uploadContent">
+                                <div class="file-upload-icon"><i class="bi bi-cloud-arrow-up"></i></div>
+                                <p style="font-weight: 600; margin-bottom: 0.25rem;">Arrastra una foto aquí</p>
+                                <p style="font-size: 0.875rem; color: #6b7280; margin-bottom: 0.75rem;">o haz clic para seleccionar</p>
+                                <button type="button" class="btn btn-outline" style="font-size: 0.875rem;">Seleccionar Archivo</button>
+                                <p style="font-size: 0.75rem; color: #9ca3af; margin-top: 0.5rem;">PNG, JPG hasta 5MB</p>
+                            </div>
+
                             <input type="file" name="photo" id="photoInput" accept="image/*">
                         </div>
                     </div>
@@ -750,5 +758,26 @@
     document.getElementById('petName').addEventListener('input', updatePreview);
     document.getElementById('petDOB').addEventListener('change', updatePreview);
     document.getElementById('petWeight').addEventListener('input', updatePreview);
+
+
+    // Preview de imagen
+    document.getElementById('photoInput').addEventListener('change', function(event) {
+        const file = event.target.files[0];
+        const preview = document.getElementById('imagePreview');
+        const content = document.getElementById('uploadContent');
+
+        if (file) {
+            const reader = new FileReader();
+
+            reader.onload = function(e) {
+                preview.src = e.target.result;
+                preview.style.display = 'block';
+                content.style.display = 'none';
+            };
+
+            reader.readAsDataURL(file);
+        }
+    });
+
 </script>
 {% endblock %}
