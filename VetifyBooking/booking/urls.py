@@ -46,4 +46,7 @@ urlpatterns = [
     path('historial/', views.medical_history_view, name='medical_history'),
     path('historial/consulta/<int:consultation_id>/pdf/', views.export_consultation_pdf, name='export_consultation_pdf'),
     path('historial/receta/<int:prescription_id>/pdf/', views.export_prescription_pdf, name='export_prescription_pdf'),
+    path('veterinarios/', views.veterinarians_view, name='veterinarians'),
+    path('api/vets-by-service/<int:service_id>/', views.vets_by_service, name='vets_by_service'),
+    path('api/all-vets/', views.all_vets, name='all_vets'),
 ]

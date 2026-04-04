@@ -21,6 +21,7 @@
                 <strong>Hora</strong>
                 <strong>Servicio</strong>
                 <strong>Estado</strong>
+                <strong>Acciones</strong>
                 <strong></strong>
             </div>
 
@@ -62,13 +63,17 @@
 
                 <div class="appointment-actions">
                     {% if appointment.status != 'cancelled' and appointment.status != 'completed' %}
-                    <form method="post" action="{% url 'delete_appointment' appointment.pk %}">
-                        {% csrf_token %}
-                        <button type="submit" class="delete-btn"
-                            onclick="return confirm('¿Cancelar esta cita?')">
+                        <form method="post" action="{% url 'delete_appointment' appointment.pk %}">
+                            {% csrf_token %}
+                            <button type="submit" class="delete-btn"
+                                onclick="return confirm('¿Cancelar esta cita?')">
+                                Cancelar
+                            </button>
+                        </form>
+                    {% else %}
+                        <button class="delete-btn" disabled style="opacity:0.5; cursor:not-allowed;">
                             Cancelar
                         </button>
-                    </form>
                     {% endif %}
                 </div>
             </div>

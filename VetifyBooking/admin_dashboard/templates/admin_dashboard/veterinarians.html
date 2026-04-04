@@ -318,7 +318,13 @@
                         </div>
 
                         <div class="vet-actions">
-                            <a href="{% url 'admin_dashboard:toggle_vet_status' vet.id %}" class="action-btn btn-toggle" onclick="return confirm('¿Cambiar estado del veterinario?')">
+                            <a href="{% url 'admin_dashboard:edit_veterinarian' vet.id %}"
+                            class="action-btn" style="background:#dbeafe; color:#1e40af;">
+                                <i class="bi bi-pencil"></i> Editar
+                            </a>
+                            <a href="{% url 'admin_dashboard:toggle_vet_status' vet.id %}"
+                            class="action-btn btn-toggle"
+                            onclick="return confirm('¿Cambiar estado del veterinario?')">
                                 {% if vet.is_active %}
                                     <i class="bi bi-lock"></i> Desactivar
                                 {% else %}
@@ -402,9 +408,29 @@
                     </div>
 
                 </div>
+                <!-- Foto -->
                 <div style="display:flex; flex-direction:column; gap:0.5rem; grid-column:1/-1;">
                     <label style="font-size:0.875rem; font-weight:600; color:#374151;">Foto</label>
                     <input type="file" name="photo" accept="image/*" class="filter-input">
+                </div>
+
+                <!-- Bio -->
+                <div style="display:flex; flex-direction:column; gap:0.5rem; grid-column:1/-1;">
+                    <label style="font-size:0.875rem; font-weight:600; color:#374151;">Biografía</label>
+                    <textarea name="bio" rows="2" class="filter-input" placeholder="Breve descripción del veterinario..."></textarea>
+                </div>
+
+                <!-- Servicios -->
+                <div style="display:flex; flex-direction:column; gap:0.5rem; grid-column:1/-1;">
+                    <label style="font-size:0.875rem; font-weight:600; color:#374151;">Servicios que ofrece</label>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0.5rem; background:#f9fafb; border:1px solid #d1d5db; border-radius:0.5rem; padding:0.75rem;">
+                        {% for service in services %}
+                        <label style="display:flex; align-items:center; gap:0.5rem; font-size:0.875rem; cursor:pointer;">
+                            <input type="checkbox" name="services" value="{{ service.id }}">
+                            {{ service.name }}
+                        </label>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div style="display:flex; gap:1rem; margin-top:1.5rem;">

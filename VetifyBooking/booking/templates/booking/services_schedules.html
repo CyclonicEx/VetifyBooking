@@ -129,68 +129,16 @@
 </section>
 
 <!-- SECCIÓN DE VETERINARIOS DISPONIBLES -->
-<section class="vets-section">
+<section class="cta-schedules" style="background:linear-gradient(135deg,#f0f9ff,#e0f2fe);">
     <div class="container">
-        <div class="vets-header">
-            <h2 class="section-title">
-                <span><i class="bi bi-person-badge"></i></span>
-                Nuestros Veterinarios
-            </h2>
-            <p class="section-subtitle">Equipo profesional dedicado al cuidado de tus mascotas</p>
-        </div>
-
-        <div class="vets-grid">
-            {% for vet in veterinarians %}
-            <div class="vet-card">
-                <div class="vet-avatar">
-                    {% if vet.profile_image %}
-                    <img src="{{ vet.profile_image.url }}" alt="{{ vet.get_full_name }}">
-                    {% else %}
-                    <div class="vet-avatar-placeholder">
-                        <span><i class="bi bi-person"></i></span>
-                    </div>
-                    {% endif %}
-                    {% if vet.is_available_today %}
-                    <span class="vet-status-badge vet-status-available"><i class="bi bi-circle-fill"></i></span>
-                    {% else %}
-                    <span class="vet-status-badge vet-status-unavailable"><i class="bi bi-x-circle-fill"></i></span>
-                    {% endif %}
-                </div>
-                
-                <div class="vet-info">
-                    <h3 class="vet-name">{{ vet.get_full_name }}</h3>
-                    <p class="vet-specialty">{{ vet.specialty|default:"Medicina Veterinaria General" }}</p>
-                    
-                    <div class="vet-stats">
-                        <div class="vet-stat">
-                            <span class="vet-stat-icon"><i class="bi bi-star-fill"></i></span>
-                            <span class="vet-stat-value">{{ vet.rating|default:"5.0" }}</span>
-                        </div>
-                        <div class="vet-stat">
-                            <span class="vet-stat-icon"><i class="bi bi-calendar-check"></i></span>
-                            <span class="vet-stat-value">{{ vet.total_appointments|default:"0" }} citas</span>
-                        </div>
-                    </div>
-                    
-                    {% if vet.is_available_today %}
-                    <div class="vet-availability">
-                        <span><i class="bi bi-check-circle"></i></span>
-                        <span>Disponible hoy</span>
-                    </div>
-                    {% else %}
-                    <div class="vet-availability vet-availability-unavailable">
-                        <span><i class="bi bi-pause-circle"></i></span>
-                        <span>No disponible hoy</span>
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
-            {% empty %}
-            <div class="empty-state">
-                <span class="empty-state-icon"><i class="bi bi-person-x"></i></span>
-                <p class="empty-state-text">No hay veterinarios disponibles</p>
-            </div>
-            {% endfor %}
+        <div class="cta-schedules-content">
+            <h2 class="cta-schedules-title">Conoce a Nuestros Veterinarios</h2>
+            <p class="cta-schedules-text">
+                Contamos con un equipo profesional dedicado al cuidado de tus mascotas
+            </p>
+            <a href="{% url 'veterinarians' %}" class="cta-schedules-btn cta-schedules-btn-primary">
+                <i class="bi bi-person-badge"></i> Ver Veterinarios
+            </a>
         </div>
     </div>
 </section>

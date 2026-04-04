@@ -32,6 +32,7 @@ urlpatterns = [
     path('veterinarians/', views.veterinarians_view, name='veterinarians'),
     path('veterinarians/toggle/<int:vet_id>/', views.toggle_vet_status, name='toggle_vet_status'),
     path('veterinarians/add/', views.add_veterinarian, name='add_veterinarian'),
+    path('veterinarians/<int:vet_id>/edit/', views.edit_veterinarian_view, name='edit_veterinarian'),
 
     # Gestión de servicios
     path('services/', views.services_view, name='services'),

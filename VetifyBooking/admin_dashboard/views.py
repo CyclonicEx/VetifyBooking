@@ -265,6 +265,12 @@ def veterinarians_view(request):
         'search': search,
         'total_count': vets.count(),
         'active_count': vets.filter(is_active=True).count(),
+        'veterinarians': vets,
+        'specialty_filter': specialty_filter,
+        'search': search,
+        'total_count': vets.count(),
+        'active_count': vets.filter(is_active=True).count(),
+        'services': Service.objects.filter(is_active=True),
     }
     
     return render(request, 'admin_dashboard/veterinarians.html', context)
@@ -545,6 +551,10 @@ def add_veterinarian(request):
         if request.FILES.get('photo'):
             vet.photo = request.FILES['photo']
             vet.save()
+
+        selected_services = request.POST.getlist('services')
+        vet.services.set(selected_services)
+
         messages.success(request, 'Veterinario agregado exitosamente.')
     return redirect('admin_dashboard:veterinarians')
 
@@ -979,3 +989,39 @@ def delete_vaccine_view(request, vaccine_id):
     vaccine.delete()
     messages.success(request, 'Vacuna eliminada.')
     return redirect('admin_dashboard:pet_vaccines', pet_id=pet_id)
+
+
+@admin_required
+def edit_veterinarian_view(request, vet_id):
+    vet = get_object_or_404(Veterinarian, id=vet_id)
+    services = Service.objects.filter(is_active=True)
+
+    if request.method == 'POST':
+        vet.name = request.POST.get('name')
+        vet.email = request.POST.get('email')
+        vet.phone = request.POST.get('phone', '')
+        vet.license_number = request.POST.get('license_number')
+        vet.specialty = request.POST.get('specialty')
+        vet.years_experience = request.POST.get('years_experience', 0)
+        vet.start_time = request.POST.get('start_time', '08:00')
+        vet.end_time = request.POST.get('end_time', '17:00')
+        vet.bio = request.POST.get('bio', '')
+
+        if request.FILES.get('photo'):
+            vet.photo = request.FILES['photo']
+
+        vet.save()
+
+        # Servicios seleccionados
+        selected_services = request.POST.getlist('services')
+        vet.services.set(selected_services)
+
+        messages.success(request, 'Veterinario actualizado exitosamente.')
+        return redirect('admin_dashboard:veterinarians')
+
+    context = {
+        'vet': vet,
+        'services': services,
+        'selected_services': list(vet.services.values_list('id', flat=True)),
+    }
+    return render(request, 'admin_dashboard/edit_veterinarian.html', context)

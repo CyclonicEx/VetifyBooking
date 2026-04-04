@@ -75,24 +75,38 @@ def home_view(request):
 # =============================
 # BOOKINGS
 # =============================
-
 @login_required
 def booking_view(request):
+
+    preselected_vet_id = request.GET.get('vet')
+    preselected_service_id = request.GET.get('service')
+
+    preselected_vet = None
+
+    if preselected_vet_id:
+        preselected_vet = Veterinarian.objects.filter(id=preselected_vet_id).first()
+
     if request.method == 'POST':
         form = AppointmentForm(request.POST, user=request.user)
         if form.is_valid():
             appointment = form.save(commit=False)
             appointment.user = request.user
             appointment.save()
+
             messages.success(
                 request,
-                f'Appointment booked for {appointment.pet.name}!'
+                f'¡Cita agendada para {appointment.pet.name}!'
             )
             return redirect('appointments')
     else:
         form = AppointmentForm(user=request.user)
 
-    return render(request, 'booking/booking.html', {'form': form})
+    return render(request, 'booking/booking.html', {
+        'form': form,
+        'preselected_vet_id': preselected_vet_id,
+        'preselected_vet': preselected_vet,
+        'preselected_service_id': preselected_service_id
+    })
 
 
 @login_required
@@ -104,16 +118,15 @@ def appointments_view(request):
         {'appointments': appointments}
     )
 
-
 @login_required
-def delete_appointment(request, pk):
+def delete_appointment(request, appointment_id):
     appointment = get_object_or_404(
         Appointment,
-        pk=pk,
+        pk=appointment_id,
         user=request.user
     )
     appointment.delete()
-    messages.success(request, 'Appointment deleted successfully!')
+    messages.success(request, '¡Cita cancelada correctamente!')
     return redirect('appointments')
 
 
@@ -143,39 +156,6 @@ def profile_view(request):
     return render(request, 'booking/profile.html', context)
 
 
-from .forms import (
-    RegisterForm,
-    AppointmentForm,
-    UserUpdateForm,
-    ProfileUpdateForm
-)
-
-@login_required
-def edit_profile(request):
-    if request.method == 'POST':
-        user_form = UserUpdateForm(request.POST, instance=request.user)
-        profile_form = ProfileUpdateForm(
-            request.POST,
-            request.FILES,
-            instance=request.user.profile
-        )
-
-        if user_form.is_valid() and profile_form.is_valid():
-            user_form.save()
-            profile_form.save()
-            return redirect('profile')
-
-    else:
-        user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileUpdateForm(instance=request.user.profile)
-
-    context = {
-        'user_form': user_form,
-        'profile_form': profile_form
-    }
-
-    return render(request, 'booking/edit_profile.html', context)
-
 from datetime import date
 
 @login_required
@@ -183,7 +163,7 @@ def register_pet_view(request):
     if request.method == 'POST':
         pet = Pet(owner=request.user)
 
-        pet.name = request.POST.get('name')  
+        pet.name = request.POST.get('name')
         pet.pet_type = request.POST.get('species')
         pet.other_type = request.POST.get('other_type', '')
         pet.breed = request.POST.get('breed', '')
@@ -204,7 +184,7 @@ def register_pet_view(request):
 
         pet.save()
 
-        messages.success(request, f'¡{pet.name} ha sido registrado exitosamente! 🎉')
+        messages.success(request, f'¡{pet.name} ha sido registrado exitosamente!')
         return redirect('profile')
 
     return render(request, 'booking/register_pet.html', {'today': date.today().isoformat()})
@@ -513,3 +493,48 @@ def pet_detail_view(request, pet_id):
         'today': today,
     }
     return render(request, 'booking/pet_detail.html', context)
+
+@login_required
+def veterinarians_view(request):
+    veterinarians = Veterinarian.objects.all().order_by('name')
+    return render(request, 'booking/veterinarians.html', {
+        'veterinarians': veterinarians,
+    })
+
+from django.http import JsonResponse
+
+@login_required
+def vets_by_service(request, service_id):
+    vets = Veterinarian.objects.filter(
+        services__id=service_id,
+        is_active=True
+    )
+
+    return JsonResponse({
+        'vets': [
+            {
+                'id': vet.id,
+                'name': vet.name,
+                'specialty': vet.get_specialty_display(),
+                'photo': vet.photo.url if vet.photo else None
+            }
+            for vet in vets
+        ]
+    })
+
+from django.http import JsonResponse
+from .models import Veterinarian
+
+def all_vets(request):
+    vets = Veterinarian.objects.filter(is_active=True)
+
+    return JsonResponse({
+        'vets': [
+            {
+                'id': vet.id,
+                'name': vet.name,
+                'specialty': vet.get_specialty_display()
+            }
+            for vet in vets
+        ]
+    })

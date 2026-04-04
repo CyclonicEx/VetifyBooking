@@ -1579,3 +1579,43 @@ a.btn-primary:hover {
     font-weight: 600;
     color: #0f172a;
 }
+
+.appointment-row {
+    display: grid;
+    grid-template-columns: 1.5fr 1fr 1fr 1.5fr 1fr 1fr;
+    align-items: center;
+    gap: 1rem;
+}
+
+.form-group {
+    margin-bottom: 1.5rem;
+}
+
+.form-label {
+    display: block;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 0.5rem;
+    font-size: 0.875rem;
+}
+
+.select-pro {
+    width: 100%;
+    padding: 0.875rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.75rem;
+    font-size: 0.95rem;
+    background: white;
+    transition: all 0.25s ease;
+    cursor: pointer;
+}
+
+.select-pro:focus {
+    border-color: #0284c7;
+    box-shadow: 0 0 0 3px rgba(2,132,199,0.15);
+    outline: none;
+}
+
+.select-pro:hover {
+    border-color: #94a3b8;
+}

@@ -170,6 +170,13 @@ class Veterinarian(models.Model):
     photo = models.ImageField(upload_to='vets/', blank=True, null=True, verbose_name="Foto")
 
     is_active = models.BooleanField(default=True, verbose_name="Activo")
+    
+    services = models.ManyToManyField(
+        'Service',
+        blank=True,
+        related_name='veterinarians',
+        verbose_name="Servicios que ofrece"
+    )
 
     class Meta:
         verbose_name = "Veterinario"
